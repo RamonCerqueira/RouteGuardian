@@ -1,0 +1,148 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+
+model Tenant {
+  id        String   @id @default(uuid())
+  name      String
+  address   String?  @default("Av. Paulista, 2000 - Bela Vista, São Paulo - SP")
+  cep       String?  @default("12345-678")
+  latitude  Float?   @default(-23.5582)
+  longitude Float?   @default(-46.6609)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Free trial fields (no credit card required)
+  trialStartedAt     DateTime? // When the free trial began
+  trialEndsAt        DateTime? // When the free trial expires (trialStartedAt + 7 days)
+
+  // Stripe Subscription Fields
+  stripeCustomerId   String?
+  subscriptionId     String?
+  subscriptionStatus String   @default("INACTIVE") // ACTIVE, INACTIVE, TRIALING, PAST_DUE, CANCELED
+  subscriptionEnd    DateTime?
+
+  users    User[]
+  vehicles Vehicle[]
+  clients  Client[]
+  routes   Route[]
+}
+
+model User {
+  id                 String         @id @default(uuid())
+  email              String         @unique
+  password           String
+  name               String
+  role               String // ADMIN, SUPERVISOR, DRIVER
+  status             String         @default("ACTIVE") // ACTIVE, PENDING, INACTIVE
+  tenantId           String
+  tenant             Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  routes             Route[]
+  refreshTokens      RefreshToken[]
+  resetPasswordToken String?        @unique
+  resetPasswordExp   DateTime?
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model Vehicle {
+  id          String   @id @default(uuid())
+  plate       String   @unique
+  model       String
+  consumption Float // km/l
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  routes      Route[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Client {
+  id             String     @id @default(uuid())
+  name           String
+  address        String
+  cep            String?    @default("12345-678")
+  latitude       Float
+  longitude      Float
+  geofenceRadius Float      @default(50.0) // em metros
+  tenantId       String
+  tenant         Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  deliveries     Delivery[]
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+}
+
+model Route {
+  id              String        @id @default(uuid())
+  name            String
+  status          String        @default("PLANNED") // PLANNED, IN_PROGRESS, COMPLETED
+  date            DateTime      @default(now())
+  plannedDistance Float // km
+  plannedTime     Float // minutos
+  driverId        String
+  driver          User          @relation(fields: [driverId], references: [id])
+  vehicleId       String
+  vehicle         Vehicle       @relation(fields: [vehicleId], references: [id])
+  tenantId        String
+  tenant          Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  deliveries      Delivery[]
+  locationLogs    LocationLog[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  returnToDepot   Boolean       @default(true)
+}
+
+model Delivery {
+  id                 String    @id @default(uuid())
+  sequence           Int // Ordem de entrega
+  status             String    @default("PENDING") // PENDING, DELIVERED, FAILED
+  routeId            String
+  route              Route     @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  clientId           String
+  client             Client    @relation(fields: [clientId], references: [id])
+  tenantId           String
+  actualLatitude     Float?
+  actualLongitude    Float?
+  gpsAccuracy        Float?
+  gpsSpeed           Float?
+  gpsAltitude        Float?
+  gpsHeading         Float?
+  deliveredAt        DateTime?
+  photoUrl           String?
+  signatureUrl       String?
+  notes              String?
+  failureReason      String?
+  isInsideGeofence   Boolean?
+  distanceFromClient Float? // em metros
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+}
+
+model LocationLog {
+  id        String   @id @default(uuid())
+  routeId   String
+  route     Route    @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  latitude  Float
+  longitude Float
+  speed     Float?
+  accuracy  Float?
+  altitude  Float?
+  heading   Float?
+  timestamp DateTime @default(now())
+}
