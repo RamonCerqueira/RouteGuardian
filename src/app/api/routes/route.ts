@@ -127,4 +127,42 @@ export async function POST(req: NextRequest) {
   }
 }
 
+export async function PATCH(req: NextRequest) {
+  try {
+    const auth = getAuthenticatedUser(req);
+    if (!auth || (auth.role !== 'ADMIN' && auth.role !== 'SUPERVISOR')) {
+      return NextResponse.json({ success: false, message: 'Não autorizado.' }, { status: 401 });
+    }
+
+    const { routeId, status } = await req.json();
+
+    if (!routeId || !status) {
+      return NextResponse.json({ success: false, message: 'ID da rota e status são obrigatórios.' }, { status: 400 });
+    }
+
+    // Verify route belongs to tenant
+    const existingRoute = await prisma.route.findFirst({
+      where: { id: routeId, tenantId: auth.tenantId },
+    });
+
+    if (!existingRoute) {
+      return NextResponse.json({ success: false, message: 'Rota não encontrada.' }, { status: 404 });
+    }
+
+    const updatedRoute = await prisma.route.update({
+      where: { id: routeId },
+      data: { status },
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: `Status da rota atualizado para ${status}.`,
+      route: updatedRoute,
+    });
+  } catch (error) {
+    console.error('Error updating route status:', error);
+    return NextResponse.json({ success: false, message: 'Erro ao atualizar status da rota.' }, { status: 500 });
+  }
+}
+
 

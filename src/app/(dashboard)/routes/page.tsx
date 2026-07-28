@@ -38,7 +38,7 @@ interface DeliveryPoint {
 interface Route {
   id: string;
   name: string;
-  status: 'PLANNED' | 'IN_PROGRESS' | 'COMPLETED';
+  status: 'PLANNED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELED';
   date: string;
   plannedDistance: number; // km
   plannedTime: number; // minutos
@@ -317,67 +317,109 @@ export default function RoutesPage() {
 
 
 
-const columns: Column<Route>[] = [
-  {
-    header: 'Nome da Rota',
-    cell: (r) => (
-      <div className="flex items-center gap-3">
-        <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400">
-          <Navigation className="w-4 h-4" />
+  const handleCancelRoute = async (routeId: string) => {
+    if (!confirm('Tem certeza que deseja cancelar esta rota? O status será alterado para Cancelada.')) {
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/routes', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ routeId, status: 'CANCELED' }),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        setToastMessage('Rota cancelada com sucesso!');
+        loadRoutes();
+        if (selectedRoute && selectedRoute.id === routeId) {
+          setIsDetailOpen(false);
+        }
+      } else {
+        alert(data.message || 'Erro ao cancelar a rota.');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Erro de conexão ao cancelar a rota.');
+    }
+  };
+
+  const columns: Column<Route>[] = [
+    {
+      header: 'Nome da Rota',
+      cell: (r) => (
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400">
+            <Navigation className="w-4 h-4" />
+          </div>
+          <div>
+            <p className="text-sm font-bold text-slate-200">{r.name}</p>
+            <p className="text-[10px] text-slate-500 font-mono">ID: {r.id.slice(0, 8)}... • {r.date}</p>
+          </div>
         </div>
-        <div>
-          <p className="text-sm font-bold text-slate-200">{r.name}</p>
-          <p className="text-[10px] text-slate-500 font-mono">ID: {r.id.slice(0, 8)}... • {r.date}</p>
-        </div>
-      </div>
-    ),
-  },
-  {
-    header: 'Recursos Alocados',
-    cell: (r) => (
-      <div className="space-y-1">
-        <div className="flex items-center gap-1 text-xs text-slate-300">
-          <User className="w-3.5 h-3.5 text-slate-500" />
-          {r.driverName}
-        </div>
-        <div className="flex items-center gap-1 text-[10px] text-slate-500">
-          <Truck className="w-3.5 h-3.5 text-slate-600" />
-          {r.vehicleModel} ({r.vehiclePlate})
-        </div>
-      </div>
-    ),
-  },
-  {
-    header: 'Planejado',
-    cell: (r) => (
-      <div className="text-xs space-y-0.5">
-        <p className="text-slate-300 font-semibold">{r.plannedDistance.toFixed(1).replace('.', ',')} km</p>
-        <p className="text-slate-500 text-[10px]">{r.plannedTime} min estimados</p>
-      </div>
-    ),
-  },
-  {
-    header: 'Status',
-    cell: (r) => {
-      const statuses = {
-        PLANNED: { variant: 'indigo' as const, label: 'Planejada' },
-        IN_PROGRESS: { variant: 'warning' as const, label: 'Em Andamento' },
-        COMPLETED: { variant: 'success' as const, label: 'Concluída' },
-      };
-      const s = statuses[r.status];
-      return <Badge variant={s.variant}>{s.label}</Badge>;
+      ),
     },
-  },
-  {
-    header: 'Ações',
-    className: 'text-right',
-    cell: (r) => (
-      <Button size="sm" variant="outline" onClick={() => handleOpenDetails(r)}>
-        Ver Rota
-      </Button>
-    ),
-  },
-];
+    {
+      header: 'Recursos Alocados',
+      cell: (r) => (
+        <div className="space-y-1">
+          <div className="flex items-center gap-1 text-xs text-slate-300">
+            <User className="w-3.5 h-3.5 text-slate-500" />
+            {r.driverName}
+          </div>
+          <div className="flex items-center gap-1 text-[10px] text-slate-500">
+            <Truck className="w-3.5 h-3.5 text-slate-600" />
+            {r.vehicleModel} ({r.vehiclePlate})
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: 'Planejado',
+      cell: (r) => (
+        <div className="text-xs space-y-0.5">
+          <p className="text-slate-300 font-semibold">{r.plannedDistance.toFixed(1).replace('.', ',')} km</p>
+          <p className="text-slate-500 text-[10px]">{r.plannedTime} min estimados</p>
+        </div>
+      ),
+    },
+    {
+      header: 'Status',
+      cell: (r) => {
+        const statuses = {
+          PLANNED: { variant: 'indigo' as const, label: 'Planejada' },
+          IN_PROGRESS: { variant: 'warning' as const, label: 'Em Andamento' },
+          COMPLETED: { variant: 'success' as const, label: 'Concluída' },
+          CANCELED: { variant: 'danger' as const, label: 'Cancelada' },
+        };
+        const s = statuses[r.status] || { variant: 'neutral' as const, label: r.status };
+        return <Badge variant={s.variant}>{s.label}</Badge>;
+      },
+    },
+    {
+      header: 'Ações',
+      className: 'text-right',
+      cell: (r) => (
+        <div className="flex items-center justify-end gap-2">
+          <Button size="sm" variant="outline" onClick={() => handleOpenDetails(r)}>
+            Ver Rota
+          </Button>
+
+          {r.status !== 'CANCELED' && r.status !== 'COMPLETED' && (
+            <Button
+              size="sm"
+              variant="outline"
+              className="text-rose-400 border-rose-500/20 hover:bg-rose-500/10 hover:border-rose-500/40 text-xs"
+              onClick={() => handleCancelRoute(r.id)}
+            >
+              Cancelar
+            </Button>
+          )}
+        </div>
+      ),
+    },
+  ];
 
 return (
   <div className="space-y-6">
@@ -405,15 +447,26 @@ return (
         maxWidth="lg"
         footer={
           <div className="flex justify-between items-center w-full gap-3">
-            <Button
-              variant="primary"
-              onClick={handleOptimize}
-              isLoading={optimizing}
-              disabled={selectedRoute.status === 'COMPLETED'}
-              leftIcon={<Sparkles className="w-4.5 h-4.5" />}
-            >
-              Otimizar Rota (OpenStreetMap/OSRM)
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="primary"
+                onClick={handleOptimize}
+                isLoading={optimizing}
+                disabled={selectedRoute.status === 'COMPLETED' || selectedRoute.status === 'CANCELED'}
+                leftIcon={<Sparkles className="w-4.5 h-4.5" />}
+              >
+                Otimizar Rota (OpenStreetMap/OSRM)
+              </Button>
+              {selectedRoute.status !== 'CANCELED' && selectedRoute.status !== 'COMPLETED' && (
+                <Button
+                  variant="outline"
+                  className="text-rose-400 border-rose-500/20 hover:bg-rose-500/10 hover:border-rose-500/40"
+                  onClick={() => handleCancelRoute(selectedRoute.id)}
+                >
+                  Cancelar Rota
+                </Button>
+              )}
+            </div>
             <Button variant="outline" onClick={() => setIsDetailOpen(false)}>Fechar</Button>
           </div>
         }
