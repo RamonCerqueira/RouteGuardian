@@ -60,3 +60,36 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: false, message: 'Erro interno do servidor.' }, { status: 500 });
   }
 }
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const auth = getAuthenticatedUser(req);
+    if (!auth || (auth.role !== 'ADMIN' && auth.role !== 'SUPERVISOR')) {
+      return NextResponse.json({ success: false, message: 'Não autorizado.' }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get('id');
+
+    if (!id) {
+      return NextResponse.json({ success: false, message: 'ID do veículo é obrigatório.' }, { status: 400 });
+    }
+
+    const existingVehicle = await prisma.vehicle.findFirst({
+      where: { id, tenantId: auth.tenantId },
+    });
+
+    if (!existingVehicle) {
+      return NextResponse.json({ success: false, message: 'Veículo não encontrado.' }, { status: 404 });
+    }
+
+    await prisma.vehicle.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({ success: true, message: 'Veículo excluído com sucesso.' });
+  } catch (error) {
+    console.error('Error deleting vehicle:', error);
+    return NextResponse.json({ success: false, message: 'Erro ao excluir veículo.' }, { status: 500 });
+  }
+}

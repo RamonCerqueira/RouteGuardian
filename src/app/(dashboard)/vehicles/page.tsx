@@ -63,10 +63,19 @@ export default function VehiclesPage() {
 
   const handleDelete = async (id: string) => {
     if (confirm('Tem certeza que deseja excluir este veículo?')) {
-      // Local filter fallback or we can delete if we had DELETE api. We'll filter local list as fallback
-      const updated = vehicles.filter((v) => v.id !== id);
-      setVehicles(updated);
-      setToastMessage('Veículo excluído com sucesso!');
+      try {
+        const res = await fetch(`/api/vehicles?id=${id}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.success) {
+          setVehicles((prev) => prev.filter((v) => v.id !== id));
+          setToastMessage('Veículo excluído com sucesso!');
+        } else {
+          alert(data.message || 'Erro ao excluir veículo.');
+        }
+      } catch (e) {
+        console.error('Error deleting vehicle', e);
+        alert('Erro de conexão ao excluir veículo.');
+      }
     }
   };
 

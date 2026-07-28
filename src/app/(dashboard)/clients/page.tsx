@@ -77,9 +77,19 @@ export default function ClientsPage() {
 
   const handleDelete = async (id: string) => {
     if (confirm('Tem certeza que deseja excluir este cliente?')) {
-      const updated = clients.filter((c) => c.id !== id);
-      setClients(updated);
-      setToastMessage('Cliente excluído com sucesso!');
+      try {
+        const res = await fetch(`/api/clients?id=${id}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.success) {
+          setClients((prev) => prev.filter((c) => c.id !== id));
+          setToastMessage('Cliente excluído com sucesso!');
+        } else {
+          alert(data.message || 'Erro ao excluir cliente.');
+        }
+      } catch (e) {
+        console.error('Error deleting client', e);
+        alert('Erro de conexão ao excluir cliente.');
+      }
     }
   };
 
