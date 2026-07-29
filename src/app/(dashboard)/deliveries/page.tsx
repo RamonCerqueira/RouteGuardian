@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge, Card } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/Input';
+import { Toast } from '@/components/ui/Alert';
 import { 
   CheckSquare, Search, Eye, AlertCircle, CheckCircle2, 
   MapPin, Clock, Camera, FileSignature, ShieldCheck, ShieldAlert 
@@ -14,6 +15,7 @@ import {
 
 interface AuditDelivery {
   id: string;
+  trackingToken?: string;
   clientName: string;
   driverName: string;
   routeName: string;
@@ -26,6 +28,8 @@ interface AuditDelivery {
   distanceFromClient?: number; // em metros
   failureReason?: string;
   notes?: string;
+  ratingInt?: number;
+  ratingComment?: string;
 }
 
 export default function DeliveriesPage() {
@@ -74,6 +78,27 @@ export default function DeliveriesPage() {
 
     return matchesSearch && matchesStatus;
   });
+
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const handleCopyTrackingLink = (token?: string) => {
+    if (!token) {
+      alert('Token de rastreio indisponível para esta entrega.');
+      return;
+    }
+    const publicUrl = `${window.location.origin}/tracking/${token}`;
+    navigator.clipboard.writeText(publicUrl);
+    setToastMessage('Link público de rastreio copiado para a área de transferência!');
+  };
+
+  const handleSendWhatsApp = (token?: string, clientName?: string) => {
+    if (!token) return;
+    const publicUrl = `${window.location.origin}/tracking/${token}`;
+    const text = encodeURIComponent(
+      `Olá ${clientName || ''}! Acompanhe sua entrega em tempo real através do link oficial: ${publicUrl}`
+    );
+    window.open(`https://wa.me/?text=${text}`, '_blank');
+  };
 
   const columns: Column<AuditDelivery>[] = [
     {
@@ -139,16 +164,45 @@ export default function DeliveriesPage() {
           FAILED: { variant: 'danger' as const, label: 'Falhou' },
         };
         const s = statuses[d.status];
-        return <Badge variant={s.variant}>{s.label}</Badge>;
+        return (
+          <div className="flex flex-col items-start gap-1">
+            <Badge variant={s.variant}>{s.label}</Badge>
+            {d.ratingInt && (
+              <span className="text-[10px] text-amber-400 font-bold flex items-center gap-0.5">
+                ⭐ {d.ratingInt}/5
+              </span>
+            )}
+          </div>
+        );
       },
     },
     {
-      header: 'Detalhes',
+      header: 'Rastreio do Cliente',
       className: 'text-right',
       cell: (d) => (
-        <Button size="sm" variant="ghost" onClick={() => handleOpenDetails(d)}>
-          <Eye className="w-4 h-4 text-slate-400 hover:text-white" />
-        </Button>
+        <div className="flex items-center justify-end gap-1.5">
+          <Button
+            size="sm"
+            variant="outline"
+            className="text-[11px] py-1 px-2 text-indigo-400 border-indigo-500/20 hover:bg-indigo-500/10"
+            onClick={() => handleCopyTrackingLink(d.trackingToken)}
+            title="Copiar link público de rastreio para o cliente"
+          >
+            🔗 Link
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            className="text-[11px] py-1 px-2 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/10"
+            onClick={() => handleSendWhatsApp(d.trackingToken, d.clientName)}
+            title="Enviar link via WhatsApp"
+          >
+            💬 WhatsApp
+          </Button>
+          <Button size="sm" variant="ghost" onClick={() => handleOpenDetails(d)}>
+            <Eye className="w-4 h-4 text-slate-400 hover:text-white" />
+          </Button>
+        </div>
       ),
     },
   ];
@@ -281,6 +335,15 @@ export default function DeliveriesPage() {
             )}
           </div>
         </Modal>
+      )}
+
+      {toastMessage && (
+        <Toast
+          title="Rastreio do Cliente"
+          message={toastMessage}
+          type="success"
+          onClose={() => setToastMessage(null)}
+        />
       )}
     </div>
   );

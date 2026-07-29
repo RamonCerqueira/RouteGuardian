@@ -35,6 +35,7 @@ export async function GET(req: NextRequest) {
 
     const formattedDeliveries = deliveries.map((d) => ({
       id: d.id,
+      trackingToken: d.trackingToken,
       clientName: d.client.name,
       driverName: d.route.driver?.name || 'Não alocado',
       routeName: d.route.name,
@@ -47,6 +48,8 @@ export async function GET(req: NextRequest) {
       distanceFromClient: d.distanceFromClient ?? undefined,
       failureReason: d.failureReason || undefined,
       notes: d.notes || undefined,
+      ratingInt: d.ratingInt || undefined,
+      ratingComment: d.ratingComment || undefined,
     }));
 
     return NextResponse.json({ success: true, deliveries: formattedDeliveries });
