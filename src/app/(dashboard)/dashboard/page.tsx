@@ -33,6 +33,8 @@ interface DriverRanking {
 export default function DashboardPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [companyCoords, setCompanyCoords] = useState<[number, number]>([-12.9230, -38.4980]);
+  const [companyName, setCompanyName] = useState<string>('Sede da Empresa');
   const [drivers, setDrivers] = useState<DriverRanking[]>([]);
   const [mapPoints, setMapPoints] = useState<Array<{
     id: string;
@@ -41,6 +43,7 @@ export default function DashboardPage() {
     latitude: number;
     longitude: number;
     status: 'PENDING' | 'DELIVERED' | 'FAILED';
+    isCompany?: boolean;
   }>>([]);
   const [metrics, setMetrics] = useState({
     wastedFuelValue: 'R$ 0,00',
@@ -57,6 +60,18 @@ export default function DashboardPage() {
   const loadDashboardData = async () => {
     setLoading(true);
     try {
+      // 0. Fetch Tenant Company details
+      const resTenant = await fetch('/api/tenant');
+      const dataTenant = await resTenant.json();
+      const tenant = dataTenant.success ? dataTenant.tenant : null;
+
+      const tenantLat = tenant?.latitude || -12.9230;
+      const tenantLng = tenant?.longitude || -38.4980;
+      const tenantName = tenant?.name || 'Sede da Empresa';
+
+      setCompanyCoords([tenantLat, tenantLng]);
+      setCompanyName(tenantName);
+
       // 1. Fetch Users / Drivers
       const resUsers = await fetch('/api/users');
       const dataUsers = await resUsers.json();
@@ -74,8 +89,19 @@ export default function DashboardPage() {
       const dataDeliveries = await resDeliveries.json();
       const deliveriesList = dataDeliveries.success && Array.isArray(dataDeliveries.deliveries) ? dataDeliveries.deliveries : [];
 
-      // Map Points from active routes
-      const activePoints: any[] = [];
+      // Map Points from active routes - ALWAYS start with company depot at Sequence 0
+      const activePoints: any[] = [
+        {
+          id: 'COMPANY_DEPOT',
+          name: `Sede / Origem: ${tenantName}`,
+          sequence: 0,
+          latitude: tenantLat,
+          longitude: tenantLng,
+          status: 'DELIVERED',
+          isCompany: true,
+        },
+      ];
+
       routesList.forEach((r: any) => {
         if (r.deliveries && Array.isArray(r.deliveries)) {
           r.deliveries.forEach((d: any) => {
@@ -83,7 +109,7 @@ export default function DashboardPage() {
               activePoints.push({
                 id: d.id,
                 name: d.client.name,
-                sequence: d.sequence,
+                sequence: activePoints.length,
                 latitude: d.client.latitude,
                 longitude: d.client.longitude,
                 status: d.status,
@@ -240,8 +266,8 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Mapa Operacional em Tempo Real */}
-        <div className="lg:col-span-2 flex flex-col h-[400px]">
-          <div className="flex items-center justify-between bg-slate-900 border-x border-t border-slate-800 p-4 rounded-t-2xl">
+        <div className="lg:col-span-2 flex flex-col h-[400px] bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+          <div className="flex items-center justify-between p-4 border-b border-slate-800 bg-slate-900">
             <div className="flex items-center gap-2">
               <Compass className="w-5 h-5 text-indigo-400 animate-spin-slow" />
               <div>
@@ -254,9 +280,9 @@ export default function DashboardPage() {
               Tempo Real
             </span>
           </div>
-          <div className="flex-1 min-h-[300px]">
+          <div className="flex-1 w-full h-full min-h-[300px] relative overflow-hidden">
             <MapComponent 
-              center={mapPoints.length > 0 ? [mapPoints[0].latitude, mapPoints[0].longitude] : [-23.5505, -46.6333]} 
+              center={companyCoords} 
               points={mapPoints} 
             />
           </div>

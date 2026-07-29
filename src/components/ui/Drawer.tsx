@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, ChevronRight, ChevronLeft } from 'lucide-react';
 
 export interface DrawerProps {
@@ -41,21 +42,81 @@ export const DropdownMenu: React.FC<{
   items: DropdownMenuItem[];
 }> = ({ trigger, items }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const [coords, setCoords] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
+  const triggerRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setIsOpen(false);
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    setMounted(true);
   }, []);
 
+  const updatePosition = () => {
+    if (!triggerRef.current) return;
+    const rect = triggerRef.current.getBoundingClientRect();
+    const dropdownWidth = 192; // w-48 = 192px
+    const estimatedHeight = items.length * 36 + 12;
+
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const openUpwards = spaceBelow < estimatedHeight + 10 && rect.top > estimatedHeight;
+
+    let top = openUpwards ? rect.top - estimatedHeight - 6 : rect.bottom + 6;
+    let left = rect.right - dropdownWidth;
+
+    if (left < 8) left = 8;
+    if (left + dropdownWidth > window.innerWidth - 8) {
+      left = window.innerWidth - dropdownWidth - 8;
+    }
+
+    setCoords({
+      top: Math.max(8, top),
+      left: Math.max(8, left),
+    });
+  };
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    updatePosition();
+
+    const handleScrollOrResize = () => {
+      updatePosition();
+    };
+
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        triggerRef.current && !triggerRef.current.contains(e.target as Node) &&
+        menuRef.current && !menuRef.current.contains(e.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    window.addEventListener('scroll', handleScrollOrResize, true);
+    window.addEventListener('resize', handleScrollOrResize);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('scroll', handleScrollOrResize, true);
+      window.removeEventListener('resize', handleScrollOrResize);
+    };
+  }, [isOpen, items.length]);
+
   return (
-    <div className="relative inline-block text-left" ref={ref}>
+    <div className="inline-block text-left" ref={triggerRef}>
       <div onClick={() => setIsOpen(!isOpen)}>{trigger}</div>
-      {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl z-50 py-1 overflow-hidden animate-in fade-in zoom-in-95">
+      {isOpen && mounted && createPortal(
+        <div
+          ref={menuRef}
+          style={{
+            position: 'fixed',
+            top: `${coords.top}px`,
+            left: `${coords.left}px`,
+            zIndex: 9999,
+          }}
+          className="w-48 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl py-1 overflow-hidden animate-in fade-in zoom-in-95"
+        >
           {items.map((item, idx) => (
             <button
               key={idx}
@@ -73,7 +134,8 @@ export const DropdownMenu: React.FC<{
               <span>{item.label}</span>
             </button>
           ))}
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
@@ -102,26 +164,53 @@ export interface PaginationProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  totalItems?: number;
+  itemsPerPage?: number;
 }
 
-export const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
+export const Pagination: React.FC<PaginationProps> = ({
+  currentPage,
+  totalPages,
+  onPageChange,
+  totalItems,
+  itemsPerPage = 10,
+}) => {
+  const startItem = totalItems !== undefined && totalItems > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0;
+  const endItem = totalItems !== undefined ? Math.min(currentPage * itemsPerPage, totalItems) : 0;
+
   return (
-    <div className="flex items-center justify-between px-4 py-3 border-t border-slate-800/80">
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-6 py-3 border-t border-slate-800/80 bg-slate-950/40 rounded-b-2xl">
       <span className="text-xs text-slate-400">
-        Página <span className="font-semibold text-white">{currentPage}</span> de <span className="font-semibold text-white">{totalPages}</span>
+        {totalItems !== undefined ? (
+          <>
+            Exibindo <span className="font-semibold text-slate-200">{startItem}</span> a{' '}
+            <span className="font-semibold text-slate-200">{endItem}</span> de{' '}
+            <span className="font-semibold text-slate-200">{totalItems}</span> registros
+          </>
+        ) : (
+          <>
+            Página <span className="font-semibold text-slate-200">{currentPage}</span> de{' '}
+            <span className="font-semibold text-slate-200">{totalPages}</span>
+          </>
+        )}
       </span>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-2">
         <button
           disabled={currentPage <= 1}
           onClick={() => onPageChange(currentPage - 1)}
-          className="p-1.5 rounded-lg border border-slate-800 text-slate-300 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+          className="p-1.5 rounded-lg border border-slate-800 text-slate-300 hover:bg-slate-800 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors"
+          title="Página anterior"
         >
           <ChevronLeft className="w-4 h-4" />
         </button>
+        <span className="text-xs px-2 font-medium text-slate-300">
+          {currentPage} / {totalPages || 1}
+        </span>
         <button
           disabled={currentPage >= totalPages}
           onClick={() => onPageChange(currentPage + 1)}
-          className="p-1.5 rounded-lg border border-slate-800 text-slate-300 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+          className="p-1.5 rounded-lg border border-slate-800 text-slate-300 hover:bg-slate-800 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors"
+          title="Próxima página"
         >
           <ChevronRight className="w-4 h-4" />
         </button>
@@ -129,3 +218,4 @@ export const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages,
     </div>
   );
 };
+

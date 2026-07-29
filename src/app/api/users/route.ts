@@ -116,7 +116,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// PATCH — atualiza um usuário
+// PATCH — atualiza um usuário (incluindo senha se fornecida)
 export async function PATCH(req: NextRequest) {
   try {
     const auth = getAuthenticatedUser(req);
@@ -124,7 +124,7 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ success: false, message: 'Não autorizado.' }, { status: 401 });
     }
 
-    const { id, name, role, status } = await req.json();
+    const { id, name, role, status, password } = await req.json();
 
     if (!id) {
       return NextResponse.json({ success: false, message: 'ID do usuário é obrigatório.' }, { status: 400 });
@@ -154,13 +154,26 @@ export async function PATCH(req: NextRequest) {
       }
     }
 
+    const updateData: Record<string, any> = {
+      ...(name && { name }),
+      ...(role && { role }),
+      ...(status && { status }),
+    };
+
+    if (password && password.trim().length > 0) {
+      if (password.length < 6) {
+        return NextResponse.json({ success: false, message: 'A nova senha deve ter no mínimo 6 caracteres.' }, { status: 400 });
+      }
+      updateData.password = await bcrypt.hash(password, 12);
+    }
+
     const updated = await prisma.user.update({
       where: { id },
-      data: { ...(name && { name }), ...(role && { role }), ...(status && { status }) },
+      data: updateData,
       select: { id: true, name: true, email: true, role: true, status: true, createdAt: true },
     });
 
-    return NextResponse.json({ success: true, message: 'Usuário atualizado.', user: updated });
+    return NextResponse.json({ success: true, message: 'Usuário atualizado com sucesso.', user: updated });
   } catch (error) {
     console.error('Error updating user:', error);
     return NextResponse.json({ success: false, message: 'Erro interno do servidor.' }, { status: 500 });

@@ -186,10 +186,23 @@ export default function ClientsPage() {
     cepApi('');
   };
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search]);
+
   const filteredClients = clients.filter(
     (c) =>
       c.name.toLowerCase().includes(search.toLowerCase()) ||
       c.address.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const totalPages = Math.ceil(filteredClients.length / ITEMS_PER_PAGE) || 1;
+  const paginatedClients = filteredClients.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
   );
 
   const columns: Column<Client>[] = [
@@ -266,8 +279,18 @@ export default function ClientsPage() {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto">
-        <Table columns={columns} data={filteredClients} />
+      <div>
+        <Table
+          columns={columns}
+          data={paginatedClients}
+          pagination={{
+            currentPage,
+            totalPages,
+            onPageChange: setCurrentPage,
+            totalItems: filteredClients.length,
+            itemsPerPage: ITEMS_PER_PAGE,
+          }}
+        />
       </div>
 
       {/* CRUD Modal */}

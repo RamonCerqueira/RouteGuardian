@@ -28,6 +28,8 @@ interface PlanInfo {
 export default function UsersPage() {
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState('ALL');
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -37,6 +39,11 @@ export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [planInfo, setPlanInfo] = useState<PlanInfo | null>(null);
   const [loadingUsers, setLoadingUsers] = useState(true);
+
+  // Reset page when filter or search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, roleFilter]);
 
   // Form State
   const [formData, setFormData] = useState<{
@@ -103,10 +110,19 @@ export default function UsersPage() {
     try {
       if (editingUser) {
         // PATCH
+        const payload: Record<string, any> = {
+          id: editingUser.id,
+          name: formData.name,
+          role: formData.role,
+        };
+        if (formData.password && formData.password.trim()) {
+          payload.password = formData.password;
+        }
+
         const res = await fetch('/api/users', {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: editingUser.id, name: formData.name, role: formData.role }),
+          body: JSON.stringify(payload),
         });
         const data = await res.json();
         if (data.success) {
@@ -158,7 +174,7 @@ export default function UsersPage() {
     }
   };
 
-  // ── Filter ────────────────────────────────────────────────────────────
+  // ── Filter & Pagination ───────────────────────────────────────────────
   const filteredUsers = users.filter((u) => {
     const matchesSearch =
       u.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -166,6 +182,12 @@ export default function UsersPage() {
     const matchesRole = roleFilter === 'ALL' || u.role === roleFilter;
     return matchesSearch && matchesRole;
   });
+
+  const totalPages = Math.ceil(filteredUsers.length / ITEMS_PER_PAGE) || 1;
+  const paginatedUsers = filteredUsers.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   const columns: Column<User>[] = [
     {
@@ -315,13 +337,23 @@ export default function UsersPage() {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto">
+      <div>
         {loadingUsers ? (
           <div className="flex items-center justify-center py-16">
             <div className="w-6 h-6 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
           </div>
         ) : (
-          <Table columns={columns} data={filteredUsers} />
+          <Table
+            columns={columns}
+            data={paginatedUsers}
+            pagination={{
+              currentPage,
+              totalPages,
+              onPageChange: setCurrentPage,
+              totalItems: filteredUsers.length,
+              itemsPerPage: ITEMS_PER_PAGE,
+            }}
+          />
         )}
       </div>
 
@@ -356,15 +388,13 @@ export default function UsersPage() {
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             disabled={!!editingUser}
           />
-          {!editingUser && (
-            <Input
-              label="Senha inicial"
-              type="password"
-              placeholder="Mínimo 8 caracteres"
-              value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-            />
-          )}
+          <Input
+            label={editingUser ? 'Nova Senha (opcional)' : 'Senha Inicial'}
+            type="password"
+            placeholder={editingUser ? 'Deixe em branco para manter a atual' : 'Mínimo 6 caracteres'}
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+          />
           <Select
             label="Nível de Acesso"
             value={formData.role}

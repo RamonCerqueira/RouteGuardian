@@ -12,6 +12,7 @@ interface DeliveryPoint {
   latitude: number;
   longitude: number;
   status: 'PENDING' | 'DELIVERED' | 'FAILED';
+  isCompany?: boolean;
 }
 
 interface MapComponentProps {
@@ -22,12 +23,27 @@ interface MapComponentProps {
 }
 
 export default function MapComponent({ center, zoom = 14, points, showPolyline = true }: MapComponentProps) {
-  // Fix Leaflet icons
   useEffect(() => {
     // We use custom DivIcons so we don't rely on default PNGs which often fail in Next.js bundlers
   }, []);
 
-  const createCustomIcon = (seq: number, status: string) => {
+  const createCustomIcon = (seq: number, status: string, isCompany?: boolean) => {
+    if (seq === 0 || isCompany) {
+      return L.divIcon({
+        html: `
+          <div class="relative">
+            <div class="w-8 h-8 rounded-full bg-amber-500 border-2 border-slate-900 flex items-center justify-center text-slate-950 font-black text-xs shadow-xl transition-transform duration-200 hover:scale-110">
+              🏢
+            </div>
+            <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-0 border-t-4 border-t-slate-900 border-x-4 border-x-transparent"></div>
+          </div>
+        `,
+        className: '',
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+      });
+    }
+
     const colorClass = 
       status === 'DELIVERED' ? 'bg-emerald-500' :
       status === 'FAILED' ? 'bg-rose-500' : 'bg-indigo-600';
@@ -49,11 +65,12 @@ export default function MapComponent({ center, zoom = 14, points, showPolyline =
 
   // Coordinates for the path line
   const routeLine = points
+    .slice()
     .sort((a, b) => a.sequence - b.sequence)
     .map(p => [p.latitude, p.longitude] as [number, number]);
 
   return (
-    <div className="w-full h-full rounded-2xl overflow-hidden border border-slate-800 shadow-inner">
+    <div className="w-full h-full relative overflow-hidden">
       <MapContainer 
         center={center} 
         zoom={zoom} 
@@ -69,13 +86,22 @@ export default function MapComponent({ center, zoom = 14, points, showPolyline =
           <Marker 
             key={point.id} 
             position={[point.latitude, point.longitude]} 
-            icon={createCustomIcon(point.sequence, point.status)}
+            icon={createCustomIcon(point.sequence, point.status, point.isCompany)}
           >
             <Popup className="custom-leaflet-popup">
               <div className="p-2 text-slate-950 font-sans">
-                <p className="font-extrabold text-xs">Entrega #{point.sequence}</p>
-                <p className="text-[11px] font-bold mt-0.5">{point.name}</p>
-                <p className="text-[10px] text-slate-500 mt-1">Status: {point.status}</p>
+                {point.sequence === 0 || point.isCompany ? (
+                  <>
+                    <p className="font-extrabold text-xs text-amber-600">🏢 Sede da Empresa (Origem / Partida)</p>
+                    <p className="text-[11px] font-bold mt-0.5">{point.name}</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="font-extrabold text-xs">Entrega #{point.sequence}</p>
+                    <p className="text-[11px] font-bold mt-0.5">{point.name}</p>
+                    <p className="text-[10px] text-slate-500 mt-1">Status: {point.status}</p>
+                  </>
+                )}
               </div>
             </Popup>
           </Marker>
