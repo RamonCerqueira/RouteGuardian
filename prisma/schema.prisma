@@ -77,6 +77,8 @@ model Vehicle {
 model Client {
   id             String     @id @default(uuid())
   name           String
+  contactName    String?
+  phone          String?
   address        String
   cep            String?    @default("12345-678")
   latitude       Float

@@ -11,7 +11,7 @@ import { Modal } from '@/components/ui/Modal';
 import {
   Truck, Navigation, MapPin, CheckCircle, AlertTriangle,
   CloudOff, RefreshCw, LogOut, Camera, Edit3, Play,
-  X, RotateCcw, ImageIcon,
+  X, RotateCcw, ImageIcon, Phone, MessageSquare, User,
 } from 'lucide-react';
 
 // ─── Dynamic map imports (SSR-safe) ──────────────────────────────────────────
@@ -40,6 +40,8 @@ interface Delivery {
   status: 'PENDING' | 'DELIVERED' | 'FAILED';
   client: {
     name: string;
+    contactName?: string;
+    phone?: string;
     address: string;
     latitude: number;
     longitude: number;
@@ -614,31 +616,71 @@ export default function DriverPage() {
 
             {/* Next delivery highlight */}
             {nextDelivery && (
-              <div className="bg-indigo-600/10 border border-indigo-500/30 rounded-2xl p-4">
-                <p className="text-[10px] text-indigo-400 font-bold uppercase tracking-wide mb-1.5">
-                  📍 Próxima Entrega
-                </p>
-                <p className="font-bold text-slate-100 text-sm">{nextDelivery.client.name}</p>
-                <p className="text-xs text-slate-400 mt-0.5 flex items-center gap-1">
-                  <MapPin className="w-3 h-3 shrink-0" />
-                  {nextDelivery.client.address}
-                </p>
-                <div className="flex gap-2 mt-3">
-                  {/* Navigate button — opens GPS app on mobile */}
+              <div className="bg-indigo-600/10 border border-indigo-500/30 rounded-2xl p-4 space-y-3">
+                <div>
+                  <p className="text-[10px] text-indigo-400 font-bold uppercase tracking-wide mb-1">
+                    📍 Próxima Entrega
+                  </p>
+                  <p className="font-extrabold text-slate-100 text-sm">{nextDelivery.client.name}</p>
+                  <p className="text-xs text-slate-400 mt-0.5 flex items-start gap-1">
+                    <MapPin className="w-3.5 h-3.5 text-slate-500 shrink-0 mt-0.5" />
+                    <span>{nextDelivery.client.address}</span>
+                  </p>
+
+                  {(nextDelivery.client.contactName || nextDelivery.client.phone) && (
+                    <div className="mt-2 pt-2 border-t border-indigo-500/20 flex items-center justify-between text-xs text-indigo-200">
+                      <span className="flex items-center gap-1 font-semibold">
+                        <User className="w-3.5 h-3.5 text-indigo-400" />
+                        {nextDelivery.client.contactName || 'Responsável no local'}
+                      </span>
+                      {nextDelivery.client.phone && (
+                        <span className="font-mono text-[11px] text-indigo-300 font-bold">
+                          {nextDelivery.client.phone}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Action Buttons: Navigate, Call, WhatsApp, Complete */}
+                <div className="grid grid-cols-2 gap-2">
                   <button
                     onClick={() => handleNavigate(nextDelivery)}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-xs font-bold text-slate-100 transition-colors"
+                    className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-100 border border-slate-700 transition-colors"
                   >
                     <Navigation className="w-3.5 h-3.5 text-indigo-400" />
-                    Navegar
+                    GPS / Navegar
                   </button>
+
                   <button
                     onClick={() => handleOpenConclusion(nextDelivery)}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white transition-colors"
+                    className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white shadow-lg transition-colors"
                   >
                     <CheckCircle className="w-3.5 h-3.5" />
-                    Registrar
+                    Concluir Entrega
                   </button>
+
+                  {nextDelivery.client.phone && (
+                    <a
+                      href={`tel:${nextDelivery.client.phone.replace(/\D/g, '')}`}
+                      className="flex items-center justify-center gap-1.5 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/20 text-emerald-400 text-xs font-bold transition-colors"
+                    >
+                      <Phone className="w-3.5 h-3.5" />
+                      Ligar para Cliente
+                    </a>
+                  )}
+
+                  {nextDelivery.client.phone && (
+                    <a
+                      href={`https://wa.me/55${nextDelivery.client.phone.replace(/\D/g, '')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-1.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-colors"
+                    >
+                      <MessageSquare className="w-3.5 h-3.5" />
+                      WhatsApp
+                    </a>
+                  )}
                 </div>
               </div>
             )}

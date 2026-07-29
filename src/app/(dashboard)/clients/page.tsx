@@ -14,6 +14,8 @@ import { lookupCepAndCoordinates, geocodeAddress } from '@/lib/geocoding';
 interface Client {
   id: string;
   name: string;
+  contactName?: string;
+  phone?: string;
   address: string;
   latitude: number;
   longitude: number;
@@ -30,6 +32,8 @@ export default function ClientsPage() {
   // Form State
   const [formData, setFormData] = useState({
     name: '',
+    contactName: '',
+    phone: '',
     address: '',
     latitude: '',
     longitude: '',
@@ -58,7 +62,7 @@ export default function ClientsPage() {
 
   const handleOpenCreateModal = () => {
     setEditingClient(null);
-    setFormData({ name: '', address: '', latitude: '', longitude: '', geofenceRadius: '50', cep: '' });
+    setFormData({ name: '', contactName: '', phone: '', address: '', latitude: '', longitude: '', geofenceRadius: '50', cep: '' });
     setIsModalOpen(true);
   };
 
@@ -66,11 +70,13 @@ export default function ClientsPage() {
     setEditingClient(client);
     setFormData({
       name: client.name,
+      contactName: client.contactName || '',
+      phone: client.phone || '',
       address: client.address,
       latitude: String(client.latitude),
       longitude: String(client.longitude),
       geofenceRadius: String(client.geofenceRadius),
-      cep: String(client.cep),
+      cep: String(client.cep || ''),
     });
     setIsModalOpen(true);
   };
@@ -128,7 +134,7 @@ export default function ClientsPage() {
   };
 
   const handleSave = async () => {
-    const { name, address, latitude, longitude, geofenceRadius, cep = '12345-678' } = formData;
+    const { name, contactName, phone, address, latitude, longitude, geofenceRadius, cep = '12345-678' } = formData;
     if (!name || !address || !latitude || !longitude || !geofenceRadius) return;
 
     const latNum = parseFloat(latitude.replace(',', '.'));
@@ -156,6 +162,8 @@ export default function ClientsPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name,
+          contactName,
+          phone,
           address,
           latitude: latNum,
           longitude: lngNum,
@@ -282,6 +290,20 @@ export default function ClientsPage() {
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             required
           />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Input
+              label="Pessoa de Contato no Local"
+              placeholder="Ex: João (Gerente de Recebimento)"
+              value={formData.contactName}
+              onChange={(e) => setFormData({ ...formData, contactName: e.target.value })}
+            />
+            <Input
+              label="Telefone / WhatsApp de Contato"
+              placeholder="Ex: (11) 98765-4321"
+              value={formData.phone}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            />
+          </div>
           <Input
             label="CEP"
             placeholder="Ex: 40440-130 ou 01310-100"

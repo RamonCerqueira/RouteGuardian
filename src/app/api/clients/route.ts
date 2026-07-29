@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { name, address, latitude, longitude, geofenceRadius } = body;
+    const { name, contactName, phone, address, latitude, longitude, geofenceRadius } = body;
 
     if (!name || !address || latitude === undefined || longitude === undefined || geofenceRadius === undefined) {
       return NextResponse.json({ success: false, message: 'Parâmetros obrigatórios ausentes.' }, { status: 400 });
@@ -48,6 +48,8 @@ export async function POST(req: NextRequest) {
     const newClient = await prisma.client.create({
       data: {
         name,
+        contactName: contactName || null,
+        phone: phone || null,
         address,
         latitude: parseFloat(String(latitude)),
         longitude: parseFloat(String(longitude)),
