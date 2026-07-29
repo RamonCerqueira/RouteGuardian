@@ -114,11 +114,11 @@ export default function LoginPage() {
           </Card>
         </form>
 
-        <div className="text-center mt-6 text-xs text-slate-500">
+        {/* <div className="text-center mt-6 text-xs text-slate-500">
           <p>Login de testes (Seed):</p>
           <p className="font-mono text-slate-400 mt-1">admin@guardian.com / driver@guardian.com</p>
           <p className="font-mono text-slate-400">Senha: password123</p>
-        </div>
+        </div> */}
       </div>
     </div>
   );
