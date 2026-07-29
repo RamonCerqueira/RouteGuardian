@@ -173,6 +173,8 @@ exports.Prisma.VehicleScalarFieldEnum = {
 exports.Prisma.ClientScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  contactName: 'contactName',
+  phone: 'phone',
   address: 'address',
   cep: 'cep',
   latitude: 'latitude',
@@ -204,7 +206,10 @@ exports.Prisma.DeliveryScalarFieldEnum = {
   status: 'status',
   routeId: 'routeId',
   clientId: 'clientId',
-  tenantId: 'tenantId',
+  trackingToken: 'trackingToken',
+  customerPhone: 'customerPhone',
+  ratingInt: 'ratingInt',
+  ratingComment: 'ratingComment',
   actualLatitude: 'actualLatitude',
   actualLongitude: 'actualLongitude',
   gpsAccuracy: 'gpsAccuracy',
@@ -218,6 +223,7 @@ exports.Prisma.DeliveryScalarFieldEnum = {
   failureReason: 'failureReason',
   isInsideGeofence: 'isInsideGeofence',
   distanceFromClient: 'distanceFromClient',
+  tenantId: 'tenantId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

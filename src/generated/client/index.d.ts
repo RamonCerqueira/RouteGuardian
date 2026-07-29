@@ -1502,6 +1502,7 @@ export namespace Prisma {
     vehicles: number
     clients: number
     routes: number
+    deliveries: number
   }
 
   export type TenantCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1509,6 +1510,7 @@ export namespace Prisma {
     vehicles?: boolean | TenantCountOutputTypeCountVehiclesArgs
     clients?: boolean | TenantCountOutputTypeCountClientsArgs
     routes?: boolean | TenantCountOutputTypeCountRoutesArgs
+    deliveries?: boolean | TenantCountOutputTypeCountDeliveriesArgs
   }
 
   // Custom InputTypes
@@ -1548,6 +1550,13 @@ export namespace Prisma {
    */
   export type TenantCountOutputTypeCountRoutesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: RouteWhereInput
+  }
+
+  /**
+   * TenantCountOutputType without action
+   */
+  export type TenantCountOutputTypeCountDeliveriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DeliveryWhereInput
   }
 
 
@@ -1975,6 +1984,7 @@ export namespace Prisma {
     vehicles?: boolean | Tenant$vehiclesArgs<ExtArgs>
     clients?: boolean | Tenant$clientsArgs<ExtArgs>
     routes?: boolean | Tenant$routesArgs<ExtArgs>
+    deliveries?: boolean | Tenant$deliveriesArgs<ExtArgs>
     _count?: boolean | TenantCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["tenant"]>
 
@@ -2035,6 +2045,7 @@ export namespace Prisma {
     vehicles?: boolean | Tenant$vehiclesArgs<ExtArgs>
     clients?: boolean | Tenant$clientsArgs<ExtArgs>
     routes?: boolean | Tenant$routesArgs<ExtArgs>
+    deliveries?: boolean | Tenant$deliveriesArgs<ExtArgs>
     _count?: boolean | TenantCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TenantIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2047,6 +2058,7 @@ export namespace Prisma {
       vehicles: Prisma.$VehiclePayload<ExtArgs>[]
       clients: Prisma.$ClientPayload<ExtArgs>[]
       routes: Prisma.$RoutePayload<ExtArgs>[]
+      deliveries: Prisma.$DeliveryPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2461,6 +2473,7 @@ export namespace Prisma {
     vehicles<T extends Tenant$vehiclesArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$vehiclesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VehiclePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     clients<T extends Tenant$clientsArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$clientsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     routes<T extends Tenant$routesArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$routesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoutePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    deliveries<T extends Tenant$deliveriesArgs<ExtArgs> = {}>(args?: Subset<T, Tenant$deliveriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeliveryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2985,6 +2998,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: RouteScalarFieldEnum | RouteScalarFieldEnum[]
+  }
+
+  /**
+   * Tenant.deliveries
+   */
+  export type Tenant$deliveriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Delivery
+     */
+    select?: DeliverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Delivery
+     */
+    omit?: DeliveryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryInclude<ExtArgs> | null
+    where?: DeliveryWhereInput
+    orderBy?: DeliveryOrderByWithRelationInput | DeliveryOrderByWithRelationInput[]
+    cursor?: DeliveryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DeliveryScalarFieldEnum | DeliveryScalarFieldEnum[]
   }
 
   /**
@@ -6433,6 +6470,8 @@ export namespace Prisma {
   export type ClientMinAggregateOutputType = {
     id: string | null
     name: string | null
+    contactName: string | null
+    phone: string | null
     address: string | null
     cep: string | null
     latitude: number | null
@@ -6446,6 +6485,8 @@ export namespace Prisma {
   export type ClientMaxAggregateOutputType = {
     id: string | null
     name: string | null
+    contactName: string | null
+    phone: string | null
     address: string | null
     cep: string | null
     latitude: number | null
@@ -6459,6 +6500,8 @@ export namespace Prisma {
   export type ClientCountAggregateOutputType = {
     id: number
     name: number
+    contactName: number
+    phone: number
     address: number
     cep: number
     latitude: number
@@ -6486,6 +6529,8 @@ export namespace Prisma {
   export type ClientMinAggregateInputType = {
     id?: true
     name?: true
+    contactName?: true
+    phone?: true
     address?: true
     cep?: true
     latitude?: true
@@ -6499,6 +6544,8 @@ export namespace Prisma {
   export type ClientMaxAggregateInputType = {
     id?: true
     name?: true
+    contactName?: true
+    phone?: true
     address?: true
     cep?: true
     latitude?: true
@@ -6512,6 +6559,8 @@ export namespace Prisma {
   export type ClientCountAggregateInputType = {
     id?: true
     name?: true
+    contactName?: true
+    phone?: true
     address?: true
     cep?: true
     latitude?: true
@@ -6612,6 +6661,8 @@ export namespace Prisma {
   export type ClientGroupByOutputType = {
     id: string
     name: string
+    contactName: string | null
+    phone: string | null
     address: string
     cep: string | null
     latitude: number
@@ -6644,6 +6695,8 @@ export namespace Prisma {
   export type ClientSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    contactName?: boolean
+    phone?: boolean
     address?: boolean
     cep?: boolean
     latitude?: boolean
@@ -6660,6 +6713,8 @@ export namespace Prisma {
   export type ClientSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    contactName?: boolean
+    phone?: boolean
     address?: boolean
     cep?: boolean
     latitude?: boolean
@@ -6674,6 +6729,8 @@ export namespace Prisma {
   export type ClientSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    contactName?: boolean
+    phone?: boolean
     address?: boolean
     cep?: boolean
     latitude?: boolean
@@ -6688,6 +6745,8 @@ export namespace Prisma {
   export type ClientSelectScalar = {
     id?: boolean
     name?: boolean
+    contactName?: boolean
+    phone?: boolean
     address?: boolean
     cep?: boolean
     latitude?: boolean
@@ -6698,7 +6757,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ClientOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "address" | "cep" | "latitude" | "longitude" | "geofenceRadius" | "tenantId" | "createdAt" | "updatedAt", ExtArgs["result"]["client"]>
+  export type ClientOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "contactName" | "phone" | "address" | "cep" | "latitude" | "longitude" | "geofenceRadius" | "tenantId" | "createdAt" | "updatedAt", ExtArgs["result"]["client"]>
   export type ClientInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
     deliveries?: boolean | Client$deliveriesArgs<ExtArgs>
@@ -6720,6 +6779,8 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
+      contactName: string | null
+      phone: string | null
       address: string
       cep: string | null
       latitude: number
@@ -7155,6 +7216,8 @@ export namespace Prisma {
   interface ClientFieldRefs {
     readonly id: FieldRef<"Client", 'String'>
     readonly name: FieldRef<"Client", 'String'>
+    readonly contactName: FieldRef<"Client", 'String'>
+    readonly phone: FieldRef<"Client", 'String'>
     readonly address: FieldRef<"Client", 'String'>
     readonly cep: FieldRef<"Client", 'String'>
     readonly latitude: FieldRef<"Client", 'Float'>
@@ -8876,6 +8939,7 @@ export namespace Prisma {
 
   export type DeliveryAvgAggregateOutputType = {
     sequence: number | null
+    ratingInt: number | null
     actualLatitude: number | null
     actualLongitude: number | null
     gpsAccuracy: number | null
@@ -8887,6 +8951,7 @@ export namespace Prisma {
 
   export type DeliverySumAggregateOutputType = {
     sequence: number | null
+    ratingInt: number | null
     actualLatitude: number | null
     actualLongitude: number | null
     gpsAccuracy: number | null
@@ -8902,7 +8967,10 @@ export namespace Prisma {
     status: string | null
     routeId: string | null
     clientId: string | null
-    tenantId: string | null
+    trackingToken: string | null
+    customerPhone: string | null
+    ratingInt: number | null
+    ratingComment: string | null
     actualLatitude: number | null
     actualLongitude: number | null
     gpsAccuracy: number | null
@@ -8916,6 +8984,7 @@ export namespace Prisma {
     failureReason: string | null
     isInsideGeofence: boolean | null
     distanceFromClient: number | null
+    tenantId: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -8926,7 +8995,10 @@ export namespace Prisma {
     status: string | null
     routeId: string | null
     clientId: string | null
-    tenantId: string | null
+    trackingToken: string | null
+    customerPhone: string | null
+    ratingInt: number | null
+    ratingComment: string | null
     actualLatitude: number | null
     actualLongitude: number | null
     gpsAccuracy: number | null
@@ -8940,6 +9012,7 @@ export namespace Prisma {
     failureReason: string | null
     isInsideGeofence: boolean | null
     distanceFromClient: number | null
+    tenantId: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -8950,7 +9023,10 @@ export namespace Prisma {
     status: number
     routeId: number
     clientId: number
-    tenantId: number
+    trackingToken: number
+    customerPhone: number
+    ratingInt: number
+    ratingComment: number
     actualLatitude: number
     actualLongitude: number
     gpsAccuracy: number
@@ -8964,6 +9040,7 @@ export namespace Prisma {
     failureReason: number
     isInsideGeofence: number
     distanceFromClient: number
+    tenantId: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -8972,6 +9049,7 @@ export namespace Prisma {
 
   export type DeliveryAvgAggregateInputType = {
     sequence?: true
+    ratingInt?: true
     actualLatitude?: true
     actualLongitude?: true
     gpsAccuracy?: true
@@ -8983,6 +9061,7 @@ export namespace Prisma {
 
   export type DeliverySumAggregateInputType = {
     sequence?: true
+    ratingInt?: true
     actualLatitude?: true
     actualLongitude?: true
     gpsAccuracy?: true
@@ -8998,7 +9077,10 @@ export namespace Prisma {
     status?: true
     routeId?: true
     clientId?: true
-    tenantId?: true
+    trackingToken?: true
+    customerPhone?: true
+    ratingInt?: true
+    ratingComment?: true
     actualLatitude?: true
     actualLongitude?: true
     gpsAccuracy?: true
@@ -9012,6 +9094,7 @@ export namespace Prisma {
     failureReason?: true
     isInsideGeofence?: true
     distanceFromClient?: true
+    tenantId?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -9022,7 +9105,10 @@ export namespace Prisma {
     status?: true
     routeId?: true
     clientId?: true
-    tenantId?: true
+    trackingToken?: true
+    customerPhone?: true
+    ratingInt?: true
+    ratingComment?: true
     actualLatitude?: true
     actualLongitude?: true
     gpsAccuracy?: true
@@ -9036,6 +9122,7 @@ export namespace Prisma {
     failureReason?: true
     isInsideGeofence?: true
     distanceFromClient?: true
+    tenantId?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -9046,7 +9133,10 @@ export namespace Prisma {
     status?: true
     routeId?: true
     clientId?: true
-    tenantId?: true
+    trackingToken?: true
+    customerPhone?: true
+    ratingInt?: true
+    ratingComment?: true
     actualLatitude?: true
     actualLongitude?: true
     gpsAccuracy?: true
@@ -9060,6 +9150,7 @@ export namespace Prisma {
     failureReason?: true
     isInsideGeofence?: true
     distanceFromClient?: true
+    tenantId?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -9157,7 +9248,10 @@ export namespace Prisma {
     status: string
     routeId: string
     clientId: string
-    tenantId: string
+    trackingToken: string
+    customerPhone: string | null
+    ratingInt: number | null
+    ratingComment: string | null
     actualLatitude: number | null
     actualLongitude: number | null
     gpsAccuracy: number | null
@@ -9171,6 +9265,7 @@ export namespace Prisma {
     failureReason: string | null
     isInsideGeofence: boolean | null
     distanceFromClient: number | null
+    tenantId: string
     createdAt: Date
     updatedAt: Date
     _count: DeliveryCountAggregateOutputType | null
@@ -9200,7 +9295,10 @@ export namespace Prisma {
     status?: boolean
     routeId?: boolean
     clientId?: boolean
-    tenantId?: boolean
+    trackingToken?: boolean
+    customerPhone?: boolean
+    ratingInt?: boolean
+    ratingComment?: boolean
     actualLatitude?: boolean
     actualLongitude?: boolean
     gpsAccuracy?: boolean
@@ -9214,10 +9312,12 @@ export namespace Prisma {
     failureReason?: boolean
     isInsideGeofence?: boolean
     distanceFromClient?: boolean
+    tenantId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     route?: boolean | RouteDefaultArgs<ExtArgs>
     client?: boolean | ClientDefaultArgs<ExtArgs>
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["delivery"]>
 
   export type DeliverySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -9226,7 +9326,10 @@ export namespace Prisma {
     status?: boolean
     routeId?: boolean
     clientId?: boolean
-    tenantId?: boolean
+    trackingToken?: boolean
+    customerPhone?: boolean
+    ratingInt?: boolean
+    ratingComment?: boolean
     actualLatitude?: boolean
     actualLongitude?: boolean
     gpsAccuracy?: boolean
@@ -9240,10 +9343,12 @@ export namespace Prisma {
     failureReason?: boolean
     isInsideGeofence?: boolean
     distanceFromClient?: boolean
+    tenantId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     route?: boolean | RouteDefaultArgs<ExtArgs>
     client?: boolean | ClientDefaultArgs<ExtArgs>
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["delivery"]>
 
   export type DeliverySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -9252,7 +9357,10 @@ export namespace Prisma {
     status?: boolean
     routeId?: boolean
     clientId?: boolean
-    tenantId?: boolean
+    trackingToken?: boolean
+    customerPhone?: boolean
+    ratingInt?: boolean
+    ratingComment?: boolean
     actualLatitude?: boolean
     actualLongitude?: boolean
     gpsAccuracy?: boolean
@@ -9266,10 +9374,12 @@ export namespace Prisma {
     failureReason?: boolean
     isInsideGeofence?: boolean
     distanceFromClient?: boolean
+    tenantId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     route?: boolean | RouteDefaultArgs<ExtArgs>
     client?: boolean | ClientDefaultArgs<ExtArgs>
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["delivery"]>
 
   export type DeliverySelectScalar = {
@@ -9278,7 +9388,10 @@ export namespace Prisma {
     status?: boolean
     routeId?: boolean
     clientId?: boolean
-    tenantId?: boolean
+    trackingToken?: boolean
+    customerPhone?: boolean
+    ratingInt?: boolean
+    ratingComment?: boolean
     actualLatitude?: boolean
     actualLongitude?: boolean
     gpsAccuracy?: boolean
@@ -9292,22 +9405,26 @@ export namespace Prisma {
     failureReason?: boolean
     isInsideGeofence?: boolean
     distanceFromClient?: boolean
+    tenantId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type DeliveryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sequence" | "status" | "routeId" | "clientId" | "tenantId" | "actualLatitude" | "actualLongitude" | "gpsAccuracy" | "gpsSpeed" | "gpsAltitude" | "gpsHeading" | "deliveredAt" | "photoUrl" | "signatureUrl" | "notes" | "failureReason" | "isInsideGeofence" | "distanceFromClient" | "createdAt" | "updatedAt", ExtArgs["result"]["delivery"]>
+  export type DeliveryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sequence" | "status" | "routeId" | "clientId" | "trackingToken" | "customerPhone" | "ratingInt" | "ratingComment" | "actualLatitude" | "actualLongitude" | "gpsAccuracy" | "gpsSpeed" | "gpsAltitude" | "gpsHeading" | "deliveredAt" | "photoUrl" | "signatureUrl" | "notes" | "failureReason" | "isInsideGeofence" | "distanceFromClient" | "tenantId" | "createdAt" | "updatedAt", ExtArgs["result"]["delivery"]>
   export type DeliveryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     route?: boolean | RouteDefaultArgs<ExtArgs>
     client?: boolean | ClientDefaultArgs<ExtArgs>
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
   }
   export type DeliveryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     route?: boolean | RouteDefaultArgs<ExtArgs>
     client?: boolean | ClientDefaultArgs<ExtArgs>
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
   }
   export type DeliveryIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     route?: boolean | RouteDefaultArgs<ExtArgs>
     client?: boolean | ClientDefaultArgs<ExtArgs>
+    tenant?: boolean | TenantDefaultArgs<ExtArgs>
   }
 
   export type $DeliveryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9315,6 +9432,7 @@ export namespace Prisma {
     objects: {
       route: Prisma.$RoutePayload<ExtArgs>
       client: Prisma.$ClientPayload<ExtArgs>
+      tenant: Prisma.$TenantPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -9322,7 +9440,10 @@ export namespace Prisma {
       status: string
       routeId: string
       clientId: string
-      tenantId: string
+      trackingToken: string
+      customerPhone: string | null
+      ratingInt: number | null
+      ratingComment: string | null
       actualLatitude: number | null
       actualLongitude: number | null
       gpsAccuracy: number | null
@@ -9336,6 +9457,7 @@ export namespace Prisma {
       failureReason: string | null
       isInsideGeofence: boolean | null
       distanceFromClient: number | null
+      tenantId: string
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["delivery"]>
@@ -9734,6 +9856,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     route<T extends RouteDefaultArgs<ExtArgs> = {}>(args?: Subset<T, RouteDefaultArgs<ExtArgs>>): Prisma__RouteClient<$Result.GetResult<Prisma.$RoutePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     client<T extends ClientDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClientDefaultArgs<ExtArgs>>): Prisma__ClientClient<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    tenant<T extends TenantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TenantDefaultArgs<ExtArgs>>): Prisma__TenantClient<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9768,7 +9891,10 @@ export namespace Prisma {
     readonly status: FieldRef<"Delivery", 'String'>
     readonly routeId: FieldRef<"Delivery", 'String'>
     readonly clientId: FieldRef<"Delivery", 'String'>
-    readonly tenantId: FieldRef<"Delivery", 'String'>
+    readonly trackingToken: FieldRef<"Delivery", 'String'>
+    readonly customerPhone: FieldRef<"Delivery", 'String'>
+    readonly ratingInt: FieldRef<"Delivery", 'Int'>
+    readonly ratingComment: FieldRef<"Delivery", 'String'>
     readonly actualLatitude: FieldRef<"Delivery", 'Float'>
     readonly actualLongitude: FieldRef<"Delivery", 'Float'>
     readonly gpsAccuracy: FieldRef<"Delivery", 'Float'>
@@ -9782,6 +9908,7 @@ export namespace Prisma {
     readonly failureReason: FieldRef<"Delivery", 'String'>
     readonly isInsideGeofence: FieldRef<"Delivery", 'Boolean'>
     readonly distanceFromClient: FieldRef<"Delivery", 'Float'>
+    readonly tenantId: FieldRef<"Delivery", 'String'>
     readonly createdAt: FieldRef<"Delivery", 'DateTime'>
     readonly updatedAt: FieldRef<"Delivery", 'DateTime'>
   }
@@ -11440,6 +11567,8 @@ export namespace Prisma {
   export const ClientScalarFieldEnum: {
     id: 'id',
     name: 'name',
+    contactName: 'contactName',
+    phone: 'phone',
     address: 'address',
     cep: 'cep',
     latitude: 'latitude',
@@ -11477,7 +11606,10 @@ export namespace Prisma {
     status: 'status',
     routeId: 'routeId',
     clientId: 'clientId',
-    tenantId: 'tenantId',
+    trackingToken: 'trackingToken',
+    customerPhone: 'customerPhone',
+    ratingInt: 'ratingInt',
+    ratingComment: 'ratingComment',
     actualLatitude: 'actualLatitude',
     actualLongitude: 'actualLongitude',
     gpsAccuracy: 'gpsAccuracy',
@@ -11491,6 +11623,7 @@ export namespace Prisma {
     failureReason: 'failureReason',
     isInsideGeofence: 'isInsideGeofence',
     distanceFromClient: 'distanceFromClient',
+    tenantId: 'tenantId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -11630,6 +11763,7 @@ export namespace Prisma {
     vehicles?: VehicleListRelationFilter
     clients?: ClientListRelationFilter
     routes?: RouteListRelationFilter
+    deliveries?: DeliveryListRelationFilter
   }
 
   export type TenantOrderByWithRelationInput = {
@@ -11651,6 +11785,7 @@ export namespace Prisma {
     vehicles?: VehicleOrderByRelationAggregateInput
     clients?: ClientOrderByRelationAggregateInput
     routes?: RouteOrderByRelationAggregateInput
+    deliveries?: DeliveryOrderByRelationAggregateInput
   }
 
   export type TenantWhereUniqueInput = Prisma.AtLeast<{
@@ -11675,6 +11810,7 @@ export namespace Prisma {
     vehicles?: VehicleListRelationFilter
     clients?: ClientListRelationFilter
     routes?: RouteListRelationFilter
+    deliveries?: DeliveryListRelationFilter
   }, "id">
 
   export type TenantOrderByWithAggregationInput = {
@@ -11941,6 +12077,8 @@ export namespace Prisma {
     NOT?: ClientWhereInput | ClientWhereInput[]
     id?: StringFilter<"Client"> | string
     name?: StringFilter<"Client"> | string
+    contactName?: StringNullableFilter<"Client"> | string | null
+    phone?: StringNullableFilter<"Client"> | string | null
     address?: StringFilter<"Client"> | string
     cep?: StringNullableFilter<"Client"> | string | null
     latitude?: FloatFilter<"Client"> | number
@@ -11956,6 +12094,8 @@ export namespace Prisma {
   export type ClientOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
+    contactName?: SortOrderInput | SortOrder
+    phone?: SortOrderInput | SortOrder
     address?: SortOrder
     cep?: SortOrderInput | SortOrder
     latitude?: SortOrder
@@ -11974,6 +12114,8 @@ export namespace Prisma {
     OR?: ClientWhereInput[]
     NOT?: ClientWhereInput | ClientWhereInput[]
     name?: StringFilter<"Client"> | string
+    contactName?: StringNullableFilter<"Client"> | string | null
+    phone?: StringNullableFilter<"Client"> | string | null
     address?: StringFilter<"Client"> | string
     cep?: StringNullableFilter<"Client"> | string | null
     latitude?: FloatFilter<"Client"> | number
@@ -11989,6 +12131,8 @@ export namespace Prisma {
   export type ClientOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
+    contactName?: SortOrderInput | SortOrder
+    phone?: SortOrderInput | SortOrder
     address?: SortOrder
     cep?: SortOrderInput | SortOrder
     latitude?: SortOrder
@@ -12010,6 +12154,8 @@ export namespace Prisma {
     NOT?: ClientScalarWhereWithAggregatesInput | ClientScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Client"> | string
     name?: StringWithAggregatesFilter<"Client"> | string
+    contactName?: StringNullableWithAggregatesFilter<"Client"> | string | null
+    phone?: StringNullableWithAggregatesFilter<"Client"> | string | null
     address?: StringWithAggregatesFilter<"Client"> | string
     cep?: StringNullableWithAggregatesFilter<"Client"> | string | null
     latitude?: FloatWithAggregatesFilter<"Client"> | number
@@ -12133,7 +12279,10 @@ export namespace Prisma {
     status?: StringFilter<"Delivery"> | string
     routeId?: StringFilter<"Delivery"> | string
     clientId?: StringFilter<"Delivery"> | string
-    tenantId?: StringFilter<"Delivery"> | string
+    trackingToken?: StringFilter<"Delivery"> | string
+    customerPhone?: StringNullableFilter<"Delivery"> | string | null
+    ratingInt?: IntNullableFilter<"Delivery"> | number | null
+    ratingComment?: StringNullableFilter<"Delivery"> | string | null
     actualLatitude?: FloatNullableFilter<"Delivery"> | number | null
     actualLongitude?: FloatNullableFilter<"Delivery"> | number | null
     gpsAccuracy?: FloatNullableFilter<"Delivery"> | number | null
@@ -12147,10 +12296,12 @@ export namespace Prisma {
     failureReason?: StringNullableFilter<"Delivery"> | string | null
     isInsideGeofence?: BoolNullableFilter<"Delivery"> | boolean | null
     distanceFromClient?: FloatNullableFilter<"Delivery"> | number | null
+    tenantId?: StringFilter<"Delivery"> | string
     createdAt?: DateTimeFilter<"Delivery"> | Date | string
     updatedAt?: DateTimeFilter<"Delivery"> | Date | string
     route?: XOR<RouteScalarRelationFilter, RouteWhereInput>
     client?: XOR<ClientScalarRelationFilter, ClientWhereInput>
+    tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
   }
 
   export type DeliveryOrderByWithRelationInput = {
@@ -12159,7 +12310,10 @@ export namespace Prisma {
     status?: SortOrder
     routeId?: SortOrder
     clientId?: SortOrder
-    tenantId?: SortOrder
+    trackingToken?: SortOrder
+    customerPhone?: SortOrderInput | SortOrder
+    ratingInt?: SortOrderInput | SortOrder
+    ratingComment?: SortOrderInput | SortOrder
     actualLatitude?: SortOrderInput | SortOrder
     actualLongitude?: SortOrderInput | SortOrder
     gpsAccuracy?: SortOrderInput | SortOrder
@@ -12173,14 +12327,17 @@ export namespace Prisma {
     failureReason?: SortOrderInput | SortOrder
     isInsideGeofence?: SortOrderInput | SortOrder
     distanceFromClient?: SortOrderInput | SortOrder
+    tenantId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     route?: RouteOrderByWithRelationInput
     client?: ClientOrderByWithRelationInput
+    tenant?: TenantOrderByWithRelationInput
   }
 
   export type DeliveryWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    trackingToken?: string
     AND?: DeliveryWhereInput | DeliveryWhereInput[]
     OR?: DeliveryWhereInput[]
     NOT?: DeliveryWhereInput | DeliveryWhereInput[]
@@ -12188,7 +12345,9 @@ export namespace Prisma {
     status?: StringFilter<"Delivery"> | string
     routeId?: StringFilter<"Delivery"> | string
     clientId?: StringFilter<"Delivery"> | string
-    tenantId?: StringFilter<"Delivery"> | string
+    customerPhone?: StringNullableFilter<"Delivery"> | string | null
+    ratingInt?: IntNullableFilter<"Delivery"> | number | null
+    ratingComment?: StringNullableFilter<"Delivery"> | string | null
     actualLatitude?: FloatNullableFilter<"Delivery"> | number | null
     actualLongitude?: FloatNullableFilter<"Delivery"> | number | null
     gpsAccuracy?: FloatNullableFilter<"Delivery"> | number | null
@@ -12202,11 +12361,13 @@ export namespace Prisma {
     failureReason?: StringNullableFilter<"Delivery"> | string | null
     isInsideGeofence?: BoolNullableFilter<"Delivery"> | boolean | null
     distanceFromClient?: FloatNullableFilter<"Delivery"> | number | null
+    tenantId?: StringFilter<"Delivery"> | string
     createdAt?: DateTimeFilter<"Delivery"> | Date | string
     updatedAt?: DateTimeFilter<"Delivery"> | Date | string
     route?: XOR<RouteScalarRelationFilter, RouteWhereInput>
     client?: XOR<ClientScalarRelationFilter, ClientWhereInput>
-  }, "id">
+    tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
+  }, "id" | "trackingToken">
 
   export type DeliveryOrderByWithAggregationInput = {
     id?: SortOrder
@@ -12214,7 +12375,10 @@ export namespace Prisma {
     status?: SortOrder
     routeId?: SortOrder
     clientId?: SortOrder
-    tenantId?: SortOrder
+    trackingToken?: SortOrder
+    customerPhone?: SortOrderInput | SortOrder
+    ratingInt?: SortOrderInput | SortOrder
+    ratingComment?: SortOrderInput | SortOrder
     actualLatitude?: SortOrderInput | SortOrder
     actualLongitude?: SortOrderInput | SortOrder
     gpsAccuracy?: SortOrderInput | SortOrder
@@ -12228,6 +12392,7 @@ export namespace Prisma {
     failureReason?: SortOrderInput | SortOrder
     isInsideGeofence?: SortOrderInput | SortOrder
     distanceFromClient?: SortOrderInput | SortOrder
+    tenantId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: DeliveryCountOrderByAggregateInput
@@ -12246,7 +12411,10 @@ export namespace Prisma {
     status?: StringWithAggregatesFilter<"Delivery"> | string
     routeId?: StringWithAggregatesFilter<"Delivery"> | string
     clientId?: StringWithAggregatesFilter<"Delivery"> | string
-    tenantId?: StringWithAggregatesFilter<"Delivery"> | string
+    trackingToken?: StringWithAggregatesFilter<"Delivery"> | string
+    customerPhone?: StringNullableWithAggregatesFilter<"Delivery"> | string | null
+    ratingInt?: IntNullableWithAggregatesFilter<"Delivery"> | number | null
+    ratingComment?: StringNullableWithAggregatesFilter<"Delivery"> | string | null
     actualLatitude?: FloatNullableWithAggregatesFilter<"Delivery"> | number | null
     actualLongitude?: FloatNullableWithAggregatesFilter<"Delivery"> | number | null
     gpsAccuracy?: FloatNullableWithAggregatesFilter<"Delivery"> | number | null
@@ -12260,6 +12428,7 @@ export namespace Prisma {
     failureReason?: StringNullableWithAggregatesFilter<"Delivery"> | string | null
     isInsideGeofence?: BoolNullableWithAggregatesFilter<"Delivery"> | boolean | null
     distanceFromClient?: FloatNullableWithAggregatesFilter<"Delivery"> | number | null
+    tenantId?: StringWithAggregatesFilter<"Delivery"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Delivery"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Delivery"> | Date | string
   }
@@ -12360,6 +12529,7 @@ export namespace Prisma {
     vehicles?: VehicleCreateNestedManyWithoutTenantInput
     clients?: ClientCreateNestedManyWithoutTenantInput
     routes?: RouteCreateNestedManyWithoutTenantInput
+    deliveries?: DeliveryCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateInput = {
@@ -12381,6 +12551,7 @@ export namespace Prisma {
     vehicles?: VehicleUncheckedCreateNestedManyWithoutTenantInput
     clients?: ClientUncheckedCreateNestedManyWithoutTenantInput
     routes?: RouteUncheckedCreateNestedManyWithoutTenantInput
+    deliveries?: DeliveryUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUpdateInput = {
@@ -12402,6 +12573,7 @@ export namespace Prisma {
     vehicles?: VehicleUpdateManyWithoutTenantNestedInput
     clients?: ClientUpdateManyWithoutTenantNestedInput
     routes?: RouteUpdateManyWithoutTenantNestedInput
+    deliveries?: DeliveryUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateInput = {
@@ -12423,6 +12595,7 @@ export namespace Prisma {
     vehicles?: VehicleUncheckedUpdateManyWithoutTenantNestedInput
     clients?: ClientUncheckedUpdateManyWithoutTenantNestedInput
     routes?: RouteUncheckedUpdateManyWithoutTenantNestedInput
+    deliveries?: DeliveryUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantCreateManyInput = {
@@ -12712,6 +12885,8 @@ export namespace Prisma {
   export type ClientCreateInput = {
     id?: string
     name: string
+    contactName?: string | null
+    phone?: string | null
     address: string
     cep?: string | null
     latitude: number
@@ -12726,6 +12901,8 @@ export namespace Prisma {
   export type ClientUncheckedCreateInput = {
     id?: string
     name: string
+    contactName?: string | null
+    phone?: string | null
     address: string
     cep?: string | null
     latitude: number
@@ -12740,6 +12917,8 @@ export namespace Prisma {
   export type ClientUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    contactName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: StringFieldUpdateOperationsInput | string
     cep?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: FloatFieldUpdateOperationsInput | number
@@ -12754,6 +12933,8 @@ export namespace Prisma {
   export type ClientUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    contactName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: StringFieldUpdateOperationsInput | string
     cep?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: FloatFieldUpdateOperationsInput | number
@@ -12768,6 +12949,8 @@ export namespace Prisma {
   export type ClientCreateManyInput = {
     id?: string
     name: string
+    contactName?: string | null
+    phone?: string | null
     address: string
     cep?: string | null
     latitude: number
@@ -12781,6 +12964,8 @@ export namespace Prisma {
   export type ClientUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    contactName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: StringFieldUpdateOperationsInput | string
     cep?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: FloatFieldUpdateOperationsInput | number
@@ -12793,6 +12978,8 @@ export namespace Prisma {
   export type ClientUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    contactName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: StringFieldUpdateOperationsInput | string
     cep?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: FloatFieldUpdateOperationsInput | number
@@ -12917,7 +13104,10 @@ export namespace Prisma {
     id?: string
     sequence: number
     status?: string
-    tenantId: string
+    trackingToken?: string
+    customerPhone?: string | null
+    ratingInt?: number | null
+    ratingComment?: string | null
     actualLatitude?: number | null
     actualLongitude?: number | null
     gpsAccuracy?: number | null
@@ -12935,6 +13125,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     route: RouteCreateNestedOneWithoutDeliveriesInput
     client: ClientCreateNestedOneWithoutDeliveriesInput
+    tenant: TenantCreateNestedOneWithoutDeliveriesInput
   }
 
   export type DeliveryUncheckedCreateInput = {
@@ -12943,7 +13134,10 @@ export namespace Prisma {
     status?: string
     routeId: string
     clientId: string
-    tenantId: string
+    trackingToken?: string
+    customerPhone?: string | null
+    ratingInt?: number | null
+    ratingComment?: string | null
     actualLatitude?: number | null
     actualLongitude?: number | null
     gpsAccuracy?: number | null
@@ -12957,6 +13151,7 @@ export namespace Prisma {
     failureReason?: string | null
     isInsideGeofence?: boolean | null
     distanceFromClient?: number | null
+    tenantId: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -12965,7 +13160,10 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     sequence?: IntFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
+    trackingToken?: StringFieldUpdateOperationsInput | string
+    customerPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    ratingInt?: NullableIntFieldUpdateOperationsInput | number | null
+    ratingComment?: NullableStringFieldUpdateOperationsInput | string | null
     actualLatitude?: NullableFloatFieldUpdateOperationsInput | number | null
     actualLongitude?: NullableFloatFieldUpdateOperationsInput | number | null
     gpsAccuracy?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -12983,6 +13181,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     route?: RouteUpdateOneRequiredWithoutDeliveriesNestedInput
     client?: ClientUpdateOneRequiredWithoutDeliveriesNestedInput
+    tenant?: TenantUpdateOneRequiredWithoutDeliveriesNestedInput
   }
 
   export type DeliveryUncheckedUpdateInput = {
@@ -12991,7 +13190,10 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     routeId?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
+    trackingToken?: StringFieldUpdateOperationsInput | string
+    customerPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    ratingInt?: NullableIntFieldUpdateOperationsInput | number | null
+    ratingComment?: NullableStringFieldUpdateOperationsInput | string | null
     actualLatitude?: NullableFloatFieldUpdateOperationsInput | number | null
     actualLongitude?: NullableFloatFieldUpdateOperationsInput | number | null
     gpsAccuracy?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -13005,6 +13207,7 @@ export namespace Prisma {
     failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     isInsideGeofence?: NullableBoolFieldUpdateOperationsInput | boolean | null
     distanceFromClient?: NullableFloatFieldUpdateOperationsInput | number | null
+    tenantId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13015,7 +13218,10 @@ export namespace Prisma {
     status?: string
     routeId: string
     clientId: string
-    tenantId: string
+    trackingToken?: string
+    customerPhone?: string | null
+    ratingInt?: number | null
+    ratingComment?: string | null
     actualLatitude?: number | null
     actualLongitude?: number | null
     gpsAccuracy?: number | null
@@ -13029,6 +13235,7 @@ export namespace Prisma {
     failureReason?: string | null
     isInsideGeofence?: boolean | null
     distanceFromClient?: number | null
+    tenantId: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -13037,7 +13244,10 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     sequence?: IntFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
+    trackingToken?: StringFieldUpdateOperationsInput | string
+    customerPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    ratingInt?: NullableIntFieldUpdateOperationsInput | number | null
+    ratingComment?: NullableStringFieldUpdateOperationsInput | string | null
     actualLatitude?: NullableFloatFieldUpdateOperationsInput | number | null
     actualLongitude?: NullableFloatFieldUpdateOperationsInput | number | null
     gpsAccuracy?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -13061,7 +13271,10 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     routeId?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
+    trackingToken?: StringFieldUpdateOperationsInput | string
+    customerPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    ratingInt?: NullableIntFieldUpdateOperationsInput | number | null
+    ratingComment?: NullableStringFieldUpdateOperationsInput | string | null
     actualLatitude?: NullableFloatFieldUpdateOperationsInput | number | null
     actualLongitude?: NullableFloatFieldUpdateOperationsInput | number | null
     gpsAccuracy?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -13075,6 +13288,7 @@ export namespace Prisma {
     failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     isInsideGeofence?: NullableBoolFieldUpdateOperationsInput | boolean | null
     distanceFromClient?: NullableFloatFieldUpdateOperationsInput | number | null
+    tenantId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13249,6 +13463,12 @@ export namespace Prisma {
     none?: RouteWhereInput
   }
 
+  export type DeliveryListRelationFilter = {
+    every?: DeliveryWhereInput
+    some?: DeliveryWhereInput
+    none?: DeliveryWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -13267,6 +13487,10 @@ export namespace Prisma {
   }
 
   export type RouteOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type DeliveryOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -13562,19 +13786,11 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
-  export type DeliveryListRelationFilter = {
-    every?: DeliveryWhereInput
-    some?: DeliveryWhereInput
-    none?: DeliveryWhereInput
-  }
-
-  export type DeliveryOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
   export type ClientCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    contactName?: SortOrder
+    phone?: SortOrder
     address?: SortOrder
     cep?: SortOrder
     latitude?: SortOrder
@@ -13594,6 +13810,8 @@ export namespace Prisma {
   export type ClientMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    contactName?: SortOrder
+    phone?: SortOrder
     address?: SortOrder
     cep?: SortOrder
     latitude?: SortOrder
@@ -13607,6 +13825,8 @@ export namespace Prisma {
   export type ClientMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    contactName?: SortOrder
+    phone?: SortOrder
     address?: SortOrder
     cep?: SortOrder
     latitude?: SortOrder
@@ -13717,6 +13937,17 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type BoolNullableFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
     not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
@@ -13738,7 +13969,10 @@ export namespace Prisma {
     status?: SortOrder
     routeId?: SortOrder
     clientId?: SortOrder
-    tenantId?: SortOrder
+    trackingToken?: SortOrder
+    customerPhone?: SortOrder
+    ratingInt?: SortOrder
+    ratingComment?: SortOrder
     actualLatitude?: SortOrder
     actualLongitude?: SortOrder
     gpsAccuracy?: SortOrder
@@ -13752,12 +13986,14 @@ export namespace Prisma {
     failureReason?: SortOrder
     isInsideGeofence?: SortOrder
     distanceFromClient?: SortOrder
+    tenantId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type DeliveryAvgOrderByAggregateInput = {
     sequence?: SortOrder
+    ratingInt?: SortOrder
     actualLatitude?: SortOrder
     actualLongitude?: SortOrder
     gpsAccuracy?: SortOrder
@@ -13773,7 +14009,10 @@ export namespace Prisma {
     status?: SortOrder
     routeId?: SortOrder
     clientId?: SortOrder
-    tenantId?: SortOrder
+    trackingToken?: SortOrder
+    customerPhone?: SortOrder
+    ratingInt?: SortOrder
+    ratingComment?: SortOrder
     actualLatitude?: SortOrder
     actualLongitude?: SortOrder
     gpsAccuracy?: SortOrder
@@ -13787,6 +14026,7 @@ export namespace Prisma {
     failureReason?: SortOrder
     isInsideGeofence?: SortOrder
     distanceFromClient?: SortOrder
+    tenantId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -13797,7 +14037,10 @@ export namespace Prisma {
     status?: SortOrder
     routeId?: SortOrder
     clientId?: SortOrder
-    tenantId?: SortOrder
+    trackingToken?: SortOrder
+    customerPhone?: SortOrder
+    ratingInt?: SortOrder
+    ratingComment?: SortOrder
     actualLatitude?: SortOrder
     actualLongitude?: SortOrder
     gpsAccuracy?: SortOrder
@@ -13811,12 +14054,14 @@ export namespace Prisma {
     failureReason?: SortOrder
     isInsideGeofence?: SortOrder
     distanceFromClient?: SortOrder
+    tenantId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type DeliverySumOrderByAggregateInput = {
     sequence?: SortOrder
+    ratingInt?: SortOrder
     actualLatitude?: SortOrder
     actualLongitude?: SortOrder
     gpsAccuracy?: SortOrder
@@ -13840,6 +14085,22 @@ export namespace Prisma {
     _sum?: NestedIntFilter<$PrismaModel>
     _min?: NestedIntFilter<$PrismaModel>
     _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -13932,6 +14193,13 @@ export namespace Prisma {
     connect?: RouteWhereUniqueInput | RouteWhereUniqueInput[]
   }
 
+  export type DeliveryCreateNestedManyWithoutTenantInput = {
+    create?: XOR<DeliveryCreateWithoutTenantInput, DeliveryUncheckedCreateWithoutTenantInput> | DeliveryCreateWithoutTenantInput[] | DeliveryUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: DeliveryCreateOrConnectWithoutTenantInput | DeliveryCreateOrConnectWithoutTenantInput[]
+    createMany?: DeliveryCreateManyTenantInputEnvelope
+    connect?: DeliveryWhereUniqueInput | DeliveryWhereUniqueInput[]
+  }
+
   export type UserUncheckedCreateNestedManyWithoutTenantInput = {
     create?: XOR<UserCreateWithoutTenantInput, UserUncheckedCreateWithoutTenantInput> | UserCreateWithoutTenantInput[] | UserUncheckedCreateWithoutTenantInput[]
     connectOrCreate?: UserCreateOrConnectWithoutTenantInput | UserCreateOrConnectWithoutTenantInput[]
@@ -13958,6 +14226,13 @@ export namespace Prisma {
     connectOrCreate?: RouteCreateOrConnectWithoutTenantInput | RouteCreateOrConnectWithoutTenantInput[]
     createMany?: RouteCreateManyTenantInputEnvelope
     connect?: RouteWhereUniqueInput | RouteWhereUniqueInput[]
+  }
+
+  export type DeliveryUncheckedCreateNestedManyWithoutTenantInput = {
+    create?: XOR<DeliveryCreateWithoutTenantInput, DeliveryUncheckedCreateWithoutTenantInput> | DeliveryCreateWithoutTenantInput[] | DeliveryUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: DeliveryCreateOrConnectWithoutTenantInput | DeliveryCreateOrConnectWithoutTenantInput[]
+    createMany?: DeliveryCreateManyTenantInputEnvelope
+    connect?: DeliveryWhereUniqueInput | DeliveryWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -14040,6 +14315,20 @@ export namespace Prisma {
     deleteMany?: RouteScalarWhereInput | RouteScalarWhereInput[]
   }
 
+  export type DeliveryUpdateManyWithoutTenantNestedInput = {
+    create?: XOR<DeliveryCreateWithoutTenantInput, DeliveryUncheckedCreateWithoutTenantInput> | DeliveryCreateWithoutTenantInput[] | DeliveryUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: DeliveryCreateOrConnectWithoutTenantInput | DeliveryCreateOrConnectWithoutTenantInput[]
+    upsert?: DeliveryUpsertWithWhereUniqueWithoutTenantInput | DeliveryUpsertWithWhereUniqueWithoutTenantInput[]
+    createMany?: DeliveryCreateManyTenantInputEnvelope
+    set?: DeliveryWhereUniqueInput | DeliveryWhereUniqueInput[]
+    disconnect?: DeliveryWhereUniqueInput | DeliveryWhereUniqueInput[]
+    delete?: DeliveryWhereUniqueInput | DeliveryWhereUniqueInput[]
+    connect?: DeliveryWhereUniqueInput | DeliveryWhereUniqueInput[]
+    update?: DeliveryUpdateWithWhereUniqueWithoutTenantInput | DeliveryUpdateWithWhereUniqueWithoutTenantInput[]
+    updateMany?: DeliveryUpdateManyWithWhereWithoutTenantInput | DeliveryUpdateManyWithWhereWithoutTenantInput[]
+    deleteMany?: DeliveryScalarWhereInput | DeliveryScalarWhereInput[]
+  }
+
   export type UserUncheckedUpdateManyWithoutTenantNestedInput = {
     create?: XOR<UserCreateWithoutTenantInput, UserUncheckedCreateWithoutTenantInput> | UserCreateWithoutTenantInput[] | UserUncheckedCreateWithoutTenantInput[]
     connectOrCreate?: UserCreateOrConnectWithoutTenantInput | UserCreateOrConnectWithoutTenantInput[]
@@ -14094,6 +14383,20 @@ export namespace Prisma {
     update?: RouteUpdateWithWhereUniqueWithoutTenantInput | RouteUpdateWithWhereUniqueWithoutTenantInput[]
     updateMany?: RouteUpdateManyWithWhereWithoutTenantInput | RouteUpdateManyWithWhereWithoutTenantInput[]
     deleteMany?: RouteScalarWhereInput | RouteScalarWhereInput[]
+  }
+
+  export type DeliveryUncheckedUpdateManyWithoutTenantNestedInput = {
+    create?: XOR<DeliveryCreateWithoutTenantInput, DeliveryUncheckedCreateWithoutTenantInput> | DeliveryCreateWithoutTenantInput[] | DeliveryUncheckedCreateWithoutTenantInput[]
+    connectOrCreate?: DeliveryCreateOrConnectWithoutTenantInput | DeliveryCreateOrConnectWithoutTenantInput[]
+    upsert?: DeliveryUpsertWithWhereUniqueWithoutTenantInput | DeliveryUpsertWithWhereUniqueWithoutTenantInput[]
+    createMany?: DeliveryCreateManyTenantInputEnvelope
+    set?: DeliveryWhereUniqueInput | DeliveryWhereUniqueInput[]
+    disconnect?: DeliveryWhereUniqueInput | DeliveryWhereUniqueInput[]
+    delete?: DeliveryWhereUniqueInput | DeliveryWhereUniqueInput[]
+    connect?: DeliveryWhereUniqueInput | DeliveryWhereUniqueInput[]
+    update?: DeliveryUpdateWithWhereUniqueWithoutTenantInput | DeliveryUpdateWithWhereUniqueWithoutTenantInput[]
+    updateMany?: DeliveryUpdateManyWithWhereWithoutTenantInput | DeliveryUpdateManyWithWhereWithoutTenantInput[]
+    deleteMany?: DeliveryScalarWhereInput | DeliveryScalarWhereInput[]
   }
 
   export type TenantCreateNestedOneWithoutUsersInput = {
@@ -14470,8 +14773,22 @@ export namespace Prisma {
     connect?: ClientWhereUniqueInput
   }
 
+  export type TenantCreateNestedOneWithoutDeliveriesInput = {
+    create?: XOR<TenantCreateWithoutDeliveriesInput, TenantUncheckedCreateWithoutDeliveriesInput>
+    connectOrCreate?: TenantCreateOrConnectWithoutDeliveriesInput
+    connect?: TenantWhereUniqueInput
+  }
+
   export type IntFieldUpdateOperationsInput = {
     set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
     increment?: number
     decrement?: number
     multiply?: number
@@ -14496,6 +14813,14 @@ export namespace Prisma {
     upsert?: ClientUpsertWithoutDeliveriesInput
     connect?: ClientWhereUniqueInput
     update?: XOR<XOR<ClientUpdateToOneWithWhereWithoutDeliveriesInput, ClientUpdateWithoutDeliveriesInput>, ClientUncheckedUpdateWithoutDeliveriesInput>
+  }
+
+  export type TenantUpdateOneRequiredWithoutDeliveriesNestedInput = {
+    create?: XOR<TenantCreateWithoutDeliveriesInput, TenantUncheckedCreateWithoutDeliveriesInput>
+    connectOrCreate?: TenantCreateOrConnectWithoutDeliveriesInput
+    upsert?: TenantUpsertWithoutDeliveriesInput
+    connect?: TenantWhereUniqueInput
+    update?: XOR<XOR<TenantUpdateToOneWithWhereWithoutDeliveriesInput, TenantUpdateWithoutDeliveriesInput>, TenantUncheckedUpdateWithoutDeliveriesInput>
   }
 
   export type RouteCreateNestedOneWithoutLocationLogsInput = {
@@ -14734,6 +15059,22 @@ export namespace Prisma {
     _max?: NestedIntFilter<$PrismaModel>
   }
 
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
   export type NestedBoolNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
     not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
@@ -14815,6 +15156,8 @@ export namespace Prisma {
   export type ClientCreateWithoutTenantInput = {
     id?: string
     name: string
+    contactName?: string | null
+    phone?: string | null
     address: string
     cep?: string | null
     latitude: number
@@ -14828,6 +15171,8 @@ export namespace Prisma {
   export type ClientUncheckedCreateWithoutTenantInput = {
     id?: string
     name: string
+    contactName?: string | null
+    phone?: string | null
     address: string
     cep?: string | null
     latitude: number
@@ -14887,6 +15232,70 @@ export namespace Prisma {
 
   export type RouteCreateManyTenantInputEnvelope = {
     data: RouteCreateManyTenantInput | RouteCreateManyTenantInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type DeliveryCreateWithoutTenantInput = {
+    id?: string
+    sequence: number
+    status?: string
+    trackingToken?: string
+    customerPhone?: string | null
+    ratingInt?: number | null
+    ratingComment?: string | null
+    actualLatitude?: number | null
+    actualLongitude?: number | null
+    gpsAccuracy?: number | null
+    gpsSpeed?: number | null
+    gpsAltitude?: number | null
+    gpsHeading?: number | null
+    deliveredAt?: Date | string | null
+    photoUrl?: string | null
+    signatureUrl?: string | null
+    notes?: string | null
+    failureReason?: string | null
+    isInsideGeofence?: boolean | null
+    distanceFromClient?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    route: RouteCreateNestedOneWithoutDeliveriesInput
+    client: ClientCreateNestedOneWithoutDeliveriesInput
+  }
+
+  export type DeliveryUncheckedCreateWithoutTenantInput = {
+    id?: string
+    sequence: number
+    status?: string
+    routeId: string
+    clientId: string
+    trackingToken?: string
+    customerPhone?: string | null
+    ratingInt?: number | null
+    ratingComment?: string | null
+    actualLatitude?: number | null
+    actualLongitude?: number | null
+    gpsAccuracy?: number | null
+    gpsSpeed?: number | null
+    gpsAltitude?: number | null
+    gpsHeading?: number | null
+    deliveredAt?: Date | string | null
+    photoUrl?: string | null
+    signatureUrl?: string | null
+    notes?: string | null
+    failureReason?: string | null
+    isInsideGeofence?: boolean | null
+    distanceFromClient?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type DeliveryCreateOrConnectWithoutTenantInput = {
+    where: DeliveryWhereUniqueInput
+    create: XOR<DeliveryCreateWithoutTenantInput, DeliveryUncheckedCreateWithoutTenantInput>
+  }
+
+  export type DeliveryCreateManyTenantInputEnvelope = {
+    data: DeliveryCreateManyTenantInput | DeliveryCreateManyTenantInput[]
     skipDuplicates?: boolean
   }
 
@@ -14974,6 +15383,8 @@ export namespace Prisma {
     NOT?: ClientScalarWhereInput | ClientScalarWhereInput[]
     id?: StringFilter<"Client"> | string
     name?: StringFilter<"Client"> | string
+    contactName?: StringNullableFilter<"Client"> | string | null
+    phone?: StringNullableFilter<"Client"> | string | null
     address?: StringFilter<"Client"> | string
     cep?: StringNullableFilter<"Client"> | string | null
     latitude?: FloatFilter<"Client"> | number
@@ -15018,6 +15429,53 @@ export namespace Prisma {
     returnToDepot?: BoolFilter<"Route"> | boolean
   }
 
+  export type DeliveryUpsertWithWhereUniqueWithoutTenantInput = {
+    where: DeliveryWhereUniqueInput
+    update: XOR<DeliveryUpdateWithoutTenantInput, DeliveryUncheckedUpdateWithoutTenantInput>
+    create: XOR<DeliveryCreateWithoutTenantInput, DeliveryUncheckedCreateWithoutTenantInput>
+  }
+
+  export type DeliveryUpdateWithWhereUniqueWithoutTenantInput = {
+    where: DeliveryWhereUniqueInput
+    data: XOR<DeliveryUpdateWithoutTenantInput, DeliveryUncheckedUpdateWithoutTenantInput>
+  }
+
+  export type DeliveryUpdateManyWithWhereWithoutTenantInput = {
+    where: DeliveryScalarWhereInput
+    data: XOR<DeliveryUpdateManyMutationInput, DeliveryUncheckedUpdateManyWithoutTenantInput>
+  }
+
+  export type DeliveryScalarWhereInput = {
+    AND?: DeliveryScalarWhereInput | DeliveryScalarWhereInput[]
+    OR?: DeliveryScalarWhereInput[]
+    NOT?: DeliveryScalarWhereInput | DeliveryScalarWhereInput[]
+    id?: StringFilter<"Delivery"> | string
+    sequence?: IntFilter<"Delivery"> | number
+    status?: StringFilter<"Delivery"> | string
+    routeId?: StringFilter<"Delivery"> | string
+    clientId?: StringFilter<"Delivery"> | string
+    trackingToken?: StringFilter<"Delivery"> | string
+    customerPhone?: StringNullableFilter<"Delivery"> | string | null
+    ratingInt?: IntNullableFilter<"Delivery"> | number | null
+    ratingComment?: StringNullableFilter<"Delivery"> | string | null
+    actualLatitude?: FloatNullableFilter<"Delivery"> | number | null
+    actualLongitude?: FloatNullableFilter<"Delivery"> | number | null
+    gpsAccuracy?: FloatNullableFilter<"Delivery"> | number | null
+    gpsSpeed?: FloatNullableFilter<"Delivery"> | number | null
+    gpsAltitude?: FloatNullableFilter<"Delivery"> | number | null
+    gpsHeading?: FloatNullableFilter<"Delivery"> | number | null
+    deliveredAt?: DateTimeNullableFilter<"Delivery"> | Date | string | null
+    photoUrl?: StringNullableFilter<"Delivery"> | string | null
+    signatureUrl?: StringNullableFilter<"Delivery"> | string | null
+    notes?: StringNullableFilter<"Delivery"> | string | null
+    failureReason?: StringNullableFilter<"Delivery"> | string | null
+    isInsideGeofence?: BoolNullableFilter<"Delivery"> | boolean | null
+    distanceFromClient?: FloatNullableFilter<"Delivery"> | number | null
+    tenantId?: StringFilter<"Delivery"> | string
+    createdAt?: DateTimeFilter<"Delivery"> | Date | string
+    updatedAt?: DateTimeFilter<"Delivery"> | Date | string
+  }
+
   export type TenantCreateWithoutUsersInput = {
     id?: string
     name: string
@@ -15036,6 +15494,7 @@ export namespace Prisma {
     vehicles?: VehicleCreateNestedManyWithoutTenantInput
     clients?: ClientCreateNestedManyWithoutTenantInput
     routes?: RouteCreateNestedManyWithoutTenantInput
+    deliveries?: DeliveryCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutUsersInput = {
@@ -15056,6 +15515,7 @@ export namespace Prisma {
     vehicles?: VehicleUncheckedCreateNestedManyWithoutTenantInput
     clients?: ClientUncheckedCreateNestedManyWithoutTenantInput
     routes?: RouteUncheckedCreateNestedManyWithoutTenantInput
+    deliveries?: DeliveryUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutUsersInput = {
@@ -15158,6 +15618,7 @@ export namespace Prisma {
     vehicles?: VehicleUpdateManyWithoutTenantNestedInput
     clients?: ClientUpdateManyWithoutTenantNestedInput
     routes?: RouteUpdateManyWithoutTenantNestedInput
+    deliveries?: DeliveryUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutUsersInput = {
@@ -15178,6 +15639,7 @@ export namespace Prisma {
     vehicles?: VehicleUncheckedUpdateManyWithoutTenantNestedInput
     clients?: ClientUncheckedUpdateManyWithoutTenantNestedInput
     routes?: RouteUncheckedUpdateManyWithoutTenantNestedInput
+    deliveries?: DeliveryUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type RouteUpsertWithWhereUniqueWithoutDriverInput = {
@@ -15317,6 +15779,7 @@ export namespace Prisma {
     users?: UserCreateNestedManyWithoutTenantInput
     clients?: ClientCreateNestedManyWithoutTenantInput
     routes?: RouteCreateNestedManyWithoutTenantInput
+    deliveries?: DeliveryCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutVehiclesInput = {
@@ -15337,6 +15800,7 @@ export namespace Prisma {
     users?: UserUncheckedCreateNestedManyWithoutTenantInput
     clients?: ClientUncheckedCreateNestedManyWithoutTenantInput
     routes?: RouteUncheckedCreateNestedManyWithoutTenantInput
+    deliveries?: DeliveryUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutVehiclesInput = {
@@ -15415,6 +15879,7 @@ export namespace Prisma {
     users?: UserUpdateManyWithoutTenantNestedInput
     clients?: ClientUpdateManyWithoutTenantNestedInput
     routes?: RouteUpdateManyWithoutTenantNestedInput
+    deliveries?: DeliveryUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutVehiclesInput = {
@@ -15435,6 +15900,7 @@ export namespace Prisma {
     users?: UserUncheckedUpdateManyWithoutTenantNestedInput
     clients?: ClientUncheckedUpdateManyWithoutTenantNestedInput
     routes?: RouteUncheckedUpdateManyWithoutTenantNestedInput
+    deliveries?: DeliveryUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type RouteUpsertWithWhereUniqueWithoutVehicleInput = {
@@ -15471,6 +15937,7 @@ export namespace Prisma {
     users?: UserCreateNestedManyWithoutTenantInput
     vehicles?: VehicleCreateNestedManyWithoutTenantInput
     routes?: RouteCreateNestedManyWithoutTenantInput
+    deliveries?: DeliveryCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutClientsInput = {
@@ -15491,6 +15958,7 @@ export namespace Prisma {
     users?: UserUncheckedCreateNestedManyWithoutTenantInput
     vehicles?: VehicleUncheckedCreateNestedManyWithoutTenantInput
     routes?: RouteUncheckedCreateNestedManyWithoutTenantInput
+    deliveries?: DeliveryUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutClientsInput = {
@@ -15502,7 +15970,10 @@ export namespace Prisma {
     id?: string
     sequence: number
     status?: string
-    tenantId: string
+    trackingToken?: string
+    customerPhone?: string | null
+    ratingInt?: number | null
+    ratingComment?: string | null
     actualLatitude?: number | null
     actualLongitude?: number | null
     gpsAccuracy?: number | null
@@ -15519,6 +15990,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     route: RouteCreateNestedOneWithoutDeliveriesInput
+    tenant: TenantCreateNestedOneWithoutDeliveriesInput
   }
 
   export type DeliveryUncheckedCreateWithoutClientInput = {
@@ -15526,7 +15998,10 @@ export namespace Prisma {
     sequence: number
     status?: string
     routeId: string
-    tenantId: string
+    trackingToken?: string
+    customerPhone?: string | null
+    ratingInt?: number | null
+    ratingComment?: string | null
     actualLatitude?: number | null
     actualLongitude?: number | null
     gpsAccuracy?: number | null
@@ -15540,6 +16015,7 @@ export namespace Prisma {
     failureReason?: string | null
     isInsideGeofence?: boolean | null
     distanceFromClient?: number | null
+    tenantId: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -15583,6 +16059,7 @@ export namespace Prisma {
     users?: UserUpdateManyWithoutTenantNestedInput
     vehicles?: VehicleUpdateManyWithoutTenantNestedInput
     routes?: RouteUpdateManyWithoutTenantNestedInput
+    deliveries?: DeliveryUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutClientsInput = {
@@ -15603,6 +16080,7 @@ export namespace Prisma {
     users?: UserUncheckedUpdateManyWithoutTenantNestedInput
     vehicles?: VehicleUncheckedUpdateManyWithoutTenantNestedInput
     routes?: RouteUncheckedUpdateManyWithoutTenantNestedInput
+    deliveries?: DeliveryUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type DeliveryUpsertWithWhereUniqueWithoutClientInput = {
@@ -15619,33 +16097,6 @@ export namespace Prisma {
   export type DeliveryUpdateManyWithWhereWithoutClientInput = {
     where: DeliveryScalarWhereInput
     data: XOR<DeliveryUpdateManyMutationInput, DeliveryUncheckedUpdateManyWithoutClientInput>
-  }
-
-  export type DeliveryScalarWhereInput = {
-    AND?: DeliveryScalarWhereInput | DeliveryScalarWhereInput[]
-    OR?: DeliveryScalarWhereInput[]
-    NOT?: DeliveryScalarWhereInput | DeliveryScalarWhereInput[]
-    id?: StringFilter<"Delivery"> | string
-    sequence?: IntFilter<"Delivery"> | number
-    status?: StringFilter<"Delivery"> | string
-    routeId?: StringFilter<"Delivery"> | string
-    clientId?: StringFilter<"Delivery"> | string
-    tenantId?: StringFilter<"Delivery"> | string
-    actualLatitude?: FloatNullableFilter<"Delivery"> | number | null
-    actualLongitude?: FloatNullableFilter<"Delivery"> | number | null
-    gpsAccuracy?: FloatNullableFilter<"Delivery"> | number | null
-    gpsSpeed?: FloatNullableFilter<"Delivery"> | number | null
-    gpsAltitude?: FloatNullableFilter<"Delivery"> | number | null
-    gpsHeading?: FloatNullableFilter<"Delivery"> | number | null
-    deliveredAt?: DateTimeNullableFilter<"Delivery"> | Date | string | null
-    photoUrl?: StringNullableFilter<"Delivery"> | string | null
-    signatureUrl?: StringNullableFilter<"Delivery"> | string | null
-    notes?: StringNullableFilter<"Delivery"> | string | null
-    failureReason?: StringNullableFilter<"Delivery"> | string | null
-    isInsideGeofence?: BoolNullableFilter<"Delivery"> | boolean | null
-    distanceFromClient?: FloatNullableFilter<"Delivery"> | number | null
-    createdAt?: DateTimeFilter<"Delivery"> | Date | string
-    updatedAt?: DateTimeFilter<"Delivery"> | Date | string
   }
 
   export type UserCreateWithoutRoutesInput = {
@@ -15726,6 +16177,7 @@ export namespace Prisma {
     users?: UserCreateNestedManyWithoutTenantInput
     vehicles?: VehicleCreateNestedManyWithoutTenantInput
     clients?: ClientCreateNestedManyWithoutTenantInput
+    deliveries?: DeliveryCreateNestedManyWithoutTenantInput
   }
 
   export type TenantUncheckedCreateWithoutRoutesInput = {
@@ -15746,6 +16198,7 @@ export namespace Prisma {
     users?: UserUncheckedCreateNestedManyWithoutTenantInput
     vehicles?: VehicleUncheckedCreateNestedManyWithoutTenantInput
     clients?: ClientUncheckedCreateNestedManyWithoutTenantInput
+    deliveries?: DeliveryUncheckedCreateNestedManyWithoutTenantInput
   }
 
   export type TenantCreateOrConnectWithoutRoutesInput = {
@@ -15757,7 +16210,10 @@ export namespace Prisma {
     id?: string
     sequence: number
     status?: string
-    tenantId: string
+    trackingToken?: string
+    customerPhone?: string | null
+    ratingInt?: number | null
+    ratingComment?: string | null
     actualLatitude?: number | null
     actualLongitude?: number | null
     gpsAccuracy?: number | null
@@ -15774,6 +16230,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     client: ClientCreateNestedOneWithoutDeliveriesInput
+    tenant: TenantCreateNestedOneWithoutDeliveriesInput
   }
 
   export type DeliveryUncheckedCreateWithoutRouteInput = {
@@ -15781,7 +16238,10 @@ export namespace Prisma {
     sequence: number
     status?: string
     clientId: string
-    tenantId: string
+    trackingToken?: string
+    customerPhone?: string | null
+    ratingInt?: number | null
+    ratingComment?: string | null
     actualLatitude?: number | null
     actualLongitude?: number | null
     gpsAccuracy?: number | null
@@ -15795,6 +16255,7 @@ export namespace Prisma {
     failureReason?: string | null
     isInsideGeofence?: boolean | null
     distanceFromClient?: number | null
+    tenantId: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -15942,6 +16403,7 @@ export namespace Prisma {
     users?: UserUpdateManyWithoutTenantNestedInput
     vehicles?: VehicleUpdateManyWithoutTenantNestedInput
     clients?: ClientUpdateManyWithoutTenantNestedInput
+    deliveries?: DeliveryUpdateManyWithoutTenantNestedInput
   }
 
   export type TenantUncheckedUpdateWithoutRoutesInput = {
@@ -15962,6 +16424,7 @@ export namespace Prisma {
     users?: UserUncheckedUpdateManyWithoutTenantNestedInput
     vehicles?: VehicleUncheckedUpdateManyWithoutTenantNestedInput
     clients?: ClientUncheckedUpdateManyWithoutTenantNestedInput
+    deliveries?: DeliveryUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type DeliveryUpsertWithWhereUniqueWithoutRouteInput = {
@@ -16051,6 +16514,8 @@ export namespace Prisma {
   export type ClientCreateWithoutDeliveriesInput = {
     id?: string
     name: string
+    contactName?: string | null
+    phone?: string | null
     address: string
     cep?: string | null
     latitude: number
@@ -16064,6 +16529,8 @@ export namespace Prisma {
   export type ClientUncheckedCreateWithoutDeliveriesInput = {
     id?: string
     name: string
+    contactName?: string | null
+    phone?: string | null
     address: string
     cep?: string | null
     latitude: number
@@ -16077,6 +16544,53 @@ export namespace Prisma {
   export type ClientCreateOrConnectWithoutDeliveriesInput = {
     where: ClientWhereUniqueInput
     create: XOR<ClientCreateWithoutDeliveriesInput, ClientUncheckedCreateWithoutDeliveriesInput>
+  }
+
+  export type TenantCreateWithoutDeliveriesInput = {
+    id?: string
+    name: string
+    address?: string | null
+    cep?: string | null
+    latitude?: number | null
+    longitude?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    trialStartedAt?: Date | string | null
+    trialEndsAt?: Date | string | null
+    stripeCustomerId?: string | null
+    subscriptionId?: string | null
+    subscriptionStatus?: string
+    subscriptionEnd?: Date | string | null
+    users?: UserCreateNestedManyWithoutTenantInput
+    vehicles?: VehicleCreateNestedManyWithoutTenantInput
+    clients?: ClientCreateNestedManyWithoutTenantInput
+    routes?: RouteCreateNestedManyWithoutTenantInput
+  }
+
+  export type TenantUncheckedCreateWithoutDeliveriesInput = {
+    id?: string
+    name: string
+    address?: string | null
+    cep?: string | null
+    latitude?: number | null
+    longitude?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    trialStartedAt?: Date | string | null
+    trialEndsAt?: Date | string | null
+    stripeCustomerId?: string | null
+    subscriptionId?: string | null
+    subscriptionStatus?: string
+    subscriptionEnd?: Date | string | null
+    users?: UserUncheckedCreateNestedManyWithoutTenantInput
+    vehicles?: VehicleUncheckedCreateNestedManyWithoutTenantInput
+    clients?: ClientUncheckedCreateNestedManyWithoutTenantInput
+    routes?: RouteUncheckedCreateNestedManyWithoutTenantInput
+  }
+
+  export type TenantCreateOrConnectWithoutDeliveriesInput = {
+    where: TenantWhereUniqueInput
+    create: XOR<TenantCreateWithoutDeliveriesInput, TenantUncheckedCreateWithoutDeliveriesInput>
   }
 
   export type RouteUpsertWithoutDeliveriesInput = {
@@ -16136,6 +16650,8 @@ export namespace Prisma {
   export type ClientUpdateWithoutDeliveriesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    contactName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: StringFieldUpdateOperationsInput | string
     cep?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: FloatFieldUpdateOperationsInput | number
@@ -16149,6 +16665,8 @@ export namespace Prisma {
   export type ClientUncheckedUpdateWithoutDeliveriesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    contactName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: StringFieldUpdateOperationsInput | string
     cep?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: FloatFieldUpdateOperationsInput | number
@@ -16157,6 +16675,59 @@ export namespace Prisma {
     tenantId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TenantUpsertWithoutDeliveriesInput = {
+    update: XOR<TenantUpdateWithoutDeliveriesInput, TenantUncheckedUpdateWithoutDeliveriesInput>
+    create: XOR<TenantCreateWithoutDeliveriesInput, TenantUncheckedCreateWithoutDeliveriesInput>
+    where?: TenantWhereInput
+  }
+
+  export type TenantUpdateToOneWithWhereWithoutDeliveriesInput = {
+    where?: TenantWhereInput
+    data: XOR<TenantUpdateWithoutDeliveriesInput, TenantUncheckedUpdateWithoutDeliveriesInput>
+  }
+
+  export type TenantUpdateWithoutDeliveriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    cep?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    trialStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    subscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    subscriptionStatus?: StringFieldUpdateOperationsInput | string
+    subscriptionEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    users?: UserUpdateManyWithoutTenantNestedInput
+    vehicles?: VehicleUpdateManyWithoutTenantNestedInput
+    clients?: ClientUpdateManyWithoutTenantNestedInput
+    routes?: RouteUpdateManyWithoutTenantNestedInput
+  }
+
+  export type TenantUncheckedUpdateWithoutDeliveriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    cep?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    trialStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trialEndsAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    subscriptionId?: NullableStringFieldUpdateOperationsInput | string | null
+    subscriptionStatus?: StringFieldUpdateOperationsInput | string
+    subscriptionEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    users?: UserUncheckedUpdateManyWithoutTenantNestedInput
+    vehicles?: VehicleUncheckedUpdateManyWithoutTenantNestedInput
+    clients?: ClientUncheckedUpdateManyWithoutTenantNestedInput
+    routes?: RouteUncheckedUpdateManyWithoutTenantNestedInput
   }
 
   export type RouteCreateWithoutLocationLogsInput = {
@@ -16264,6 +16835,8 @@ export namespace Prisma {
   export type ClientCreateManyTenantInput = {
     id?: string
     name: string
+    contactName?: string | null
+    phone?: string | null
     address: string
     cep?: string | null
     latitude: number
@@ -16285,6 +16858,33 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     returnToDepot?: boolean
+  }
+
+  export type DeliveryCreateManyTenantInput = {
+    id?: string
+    sequence: number
+    status?: string
+    routeId: string
+    clientId: string
+    trackingToken?: string
+    customerPhone?: string | null
+    ratingInt?: number | null
+    ratingComment?: string | null
+    actualLatitude?: number | null
+    actualLongitude?: number | null
+    gpsAccuracy?: number | null
+    gpsSpeed?: number | null
+    gpsAltitude?: number | null
+    gpsHeading?: number | null
+    deliveredAt?: Date | string | null
+    photoUrl?: string | null
+    signatureUrl?: string | null
+    notes?: string | null
+    failureReason?: string | null
+    isInsideGeofence?: boolean | null
+    distanceFromClient?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type UserUpdateWithoutTenantInput = {
@@ -16362,6 +16962,8 @@ export namespace Prisma {
   export type ClientUpdateWithoutTenantInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    contactName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: StringFieldUpdateOperationsInput | string
     cep?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: FloatFieldUpdateOperationsInput | number
@@ -16375,6 +16977,8 @@ export namespace Prisma {
   export type ClientUncheckedUpdateWithoutTenantInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    contactName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: StringFieldUpdateOperationsInput | string
     cep?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: FloatFieldUpdateOperationsInput | number
@@ -16388,6 +16992,8 @@ export namespace Prisma {
   export type ClientUncheckedUpdateManyWithoutTenantInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    contactName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     address?: StringFieldUpdateOperationsInput | string
     cep?: NullableStringFieldUpdateOperationsInput | string | null
     latitude?: FloatFieldUpdateOperationsInput | number
@@ -16441,6 +17047,87 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     returnToDepot?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type DeliveryUpdateWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sequence?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    trackingToken?: StringFieldUpdateOperationsInput | string
+    customerPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    ratingInt?: NullableIntFieldUpdateOperationsInput | number | null
+    ratingComment?: NullableStringFieldUpdateOperationsInput | string | null
+    actualLatitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    actualLongitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    gpsAccuracy?: NullableFloatFieldUpdateOperationsInput | number | null
+    gpsSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
+    gpsAltitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    gpsHeading?: NullableFloatFieldUpdateOperationsInput | number | null
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    isInsideGeofence?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    distanceFromClient?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    route?: RouteUpdateOneRequiredWithoutDeliveriesNestedInput
+    client?: ClientUpdateOneRequiredWithoutDeliveriesNestedInput
+  }
+
+  export type DeliveryUncheckedUpdateWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sequence?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    routeId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    trackingToken?: StringFieldUpdateOperationsInput | string
+    customerPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    ratingInt?: NullableIntFieldUpdateOperationsInput | number | null
+    ratingComment?: NullableStringFieldUpdateOperationsInput | string | null
+    actualLatitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    actualLongitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    gpsAccuracy?: NullableFloatFieldUpdateOperationsInput | number | null
+    gpsSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
+    gpsAltitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    gpsHeading?: NullableFloatFieldUpdateOperationsInput | number | null
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    isInsideGeofence?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    distanceFromClient?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DeliveryUncheckedUpdateManyWithoutTenantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sequence?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    routeId?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    trackingToken?: StringFieldUpdateOperationsInput | string
+    customerPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    ratingInt?: NullableIntFieldUpdateOperationsInput | number | null
+    ratingComment?: NullableStringFieldUpdateOperationsInput | string | null
+    actualLatitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    actualLongitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    gpsAccuracy?: NullableFloatFieldUpdateOperationsInput | number | null
+    gpsSpeed?: NullableFloatFieldUpdateOperationsInput | number | null
+    gpsAltitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    gpsHeading?: NullableFloatFieldUpdateOperationsInput | number | null
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    photoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    failureReason?: NullableStringFieldUpdateOperationsInput | string | null
+    isInsideGeofence?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    distanceFromClient?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RouteCreateManyDriverInput = {
@@ -16596,7 +17283,10 @@ export namespace Prisma {
     sequence: number
     status?: string
     routeId: string
-    tenantId: string
+    trackingToken?: string
+    customerPhone?: string | null
+    ratingInt?: number | null
+    ratingComment?: string | null
     actualLatitude?: number | null
     actualLongitude?: number | null
     gpsAccuracy?: number | null
@@ -16610,6 +17300,7 @@ export namespace Prisma {
     failureReason?: string | null
     isInsideGeofence?: boolean | null
     distanceFromClient?: number | null
+    tenantId: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -16618,7 +17309,10 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     sequence?: IntFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
+    trackingToken?: StringFieldUpdateOperationsInput | string
+    customerPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    ratingInt?: NullableIntFieldUpdateOperationsInput | number | null
+    ratingComment?: NullableStringFieldUpdateOperationsInput | string | null
     actualLatitude?: NullableFloatFieldUpdateOperationsInput | number | null
     actualLongitude?: NullableFloatFieldUpdateOperationsInput | number | null
     gpsAccuracy?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -16635,6 +17329,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     route?: RouteUpdateOneRequiredWithoutDeliveriesNestedInput
+    tenant?: TenantUpdateOneRequiredWithoutDeliveriesNestedInput
   }
 
   export type DeliveryUncheckedUpdateWithoutClientInput = {
@@ -16642,7 +17337,10 @@ export namespace Prisma {
     sequence?: IntFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
     routeId?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
+    trackingToken?: StringFieldUpdateOperationsInput | string
+    customerPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    ratingInt?: NullableIntFieldUpdateOperationsInput | number | null
+    ratingComment?: NullableStringFieldUpdateOperationsInput | string | null
     actualLatitude?: NullableFloatFieldUpdateOperationsInput | number | null
     actualLongitude?: NullableFloatFieldUpdateOperationsInput | number | null
     gpsAccuracy?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -16656,6 +17354,7 @@ export namespace Prisma {
     failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     isInsideGeofence?: NullableBoolFieldUpdateOperationsInput | boolean | null
     distanceFromClient?: NullableFloatFieldUpdateOperationsInput | number | null
+    tenantId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -16665,7 +17364,10 @@ export namespace Prisma {
     sequence?: IntFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
     routeId?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
+    trackingToken?: StringFieldUpdateOperationsInput | string
+    customerPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    ratingInt?: NullableIntFieldUpdateOperationsInput | number | null
+    ratingComment?: NullableStringFieldUpdateOperationsInput | string | null
     actualLatitude?: NullableFloatFieldUpdateOperationsInput | number | null
     actualLongitude?: NullableFloatFieldUpdateOperationsInput | number | null
     gpsAccuracy?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -16679,6 +17381,7 @@ export namespace Prisma {
     failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     isInsideGeofence?: NullableBoolFieldUpdateOperationsInput | boolean | null
     distanceFromClient?: NullableFloatFieldUpdateOperationsInput | number | null
+    tenantId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -16688,7 +17391,10 @@ export namespace Prisma {
     sequence: number
     status?: string
     clientId: string
-    tenantId: string
+    trackingToken?: string
+    customerPhone?: string | null
+    ratingInt?: number | null
+    ratingComment?: string | null
     actualLatitude?: number | null
     actualLongitude?: number | null
     gpsAccuracy?: number | null
@@ -16702,6 +17408,7 @@ export namespace Prisma {
     failureReason?: string | null
     isInsideGeofence?: boolean | null
     distanceFromClient?: number | null
+    tenantId: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -16721,7 +17428,10 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     sequence?: IntFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
+    trackingToken?: StringFieldUpdateOperationsInput | string
+    customerPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    ratingInt?: NullableIntFieldUpdateOperationsInput | number | null
+    ratingComment?: NullableStringFieldUpdateOperationsInput | string | null
     actualLatitude?: NullableFloatFieldUpdateOperationsInput | number | null
     actualLongitude?: NullableFloatFieldUpdateOperationsInput | number | null
     gpsAccuracy?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -16738,6 +17448,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     client?: ClientUpdateOneRequiredWithoutDeliveriesNestedInput
+    tenant?: TenantUpdateOneRequiredWithoutDeliveriesNestedInput
   }
 
   export type DeliveryUncheckedUpdateWithoutRouteInput = {
@@ -16745,7 +17456,10 @@ export namespace Prisma {
     sequence?: IntFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
+    trackingToken?: StringFieldUpdateOperationsInput | string
+    customerPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    ratingInt?: NullableIntFieldUpdateOperationsInput | number | null
+    ratingComment?: NullableStringFieldUpdateOperationsInput | string | null
     actualLatitude?: NullableFloatFieldUpdateOperationsInput | number | null
     actualLongitude?: NullableFloatFieldUpdateOperationsInput | number | null
     gpsAccuracy?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -16759,6 +17473,7 @@ export namespace Prisma {
     failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     isInsideGeofence?: NullableBoolFieldUpdateOperationsInput | boolean | null
     distanceFromClient?: NullableFloatFieldUpdateOperationsInput | number | null
+    tenantId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -16768,7 +17483,10 @@ export namespace Prisma {
     sequence?: IntFieldUpdateOperationsInput | number
     status?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
-    tenantId?: StringFieldUpdateOperationsInput | string
+    trackingToken?: StringFieldUpdateOperationsInput | string
+    customerPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    ratingInt?: NullableIntFieldUpdateOperationsInput | number | null
+    ratingComment?: NullableStringFieldUpdateOperationsInput | string | null
     actualLatitude?: NullableFloatFieldUpdateOperationsInput | number | null
     actualLongitude?: NullableFloatFieldUpdateOperationsInput | number | null
     gpsAccuracy?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -16782,6 +17500,7 @@ export namespace Prisma {
     failureReason?: NullableStringFieldUpdateOperationsInput | string | null
     isInsideGeofence?: NullableBoolFieldUpdateOperationsInput | boolean | null
     distanceFromClient?: NullableFloatFieldUpdateOperationsInput | number | null
+    tenantId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

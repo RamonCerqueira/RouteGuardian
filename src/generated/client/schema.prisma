@@ -19,10 +19,21 @@ model Tenant {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  users    User[]
-  vehicles Vehicle[]
-  clients  Client[]
-  routes   Route[]
+  // Free trial fields (no credit card required)
+  trialStartedAt DateTime? // When the free trial began
+  trialEndsAt    DateTime? // When the free trial expires (trialStartedAt + 7 days)
+
+  // Stripe Subscription Fields
+  stripeCustomerId   String?
+  subscriptionId     String?
+  subscriptionStatus String    @default("INACTIVE") // ACTIVE, INACTIVE, TRIALING, PAST_DUE, CANCELED
+  subscriptionEnd    DateTime?
+
+  users      User[]
+  vehicles   Vehicle[]
+  clients    Client[]
+  routes     Route[]
+  deliveries Delivery[]
 }
 
 model User {
@@ -66,6 +77,8 @@ model Vehicle {
 model Client {
   id             String     @id @default(uuid())
   name           String
+  contactName    String?
+  phone          String?
   address        String
   cep            String?    @default("12345-678")
   latitude       Float
@@ -106,7 +119,10 @@ model Delivery {
   route              Route     @relation(fields: [routeId], references: [id], onDelete: Cascade)
   clientId           String
   client             Client    @relation(fields: [clientId], references: [id])
-  tenantId           String
+  trackingToken      String    @unique @default(uuid())
+  customerPhone      String?
+  ratingInt          Int?
+  ratingComment      String?
   actualLatitude     Float?
   actualLongitude    Float?
   gpsAccuracy        Float?
@@ -120,6 +136,8 @@ model Delivery {
   failureReason      String?
   isInsideGeofence   Boolean?
   distanceFromClient Float? // em metros
+  tenantId           String
+  tenant             Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
 }
