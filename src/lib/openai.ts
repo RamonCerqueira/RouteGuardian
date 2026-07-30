@@ -1,3 +1,5 @@
+import OpenAI from 'openai';
+
 /**
  * OpenAI / ChatGPT Integration Service for RouteGuardian AI
  * Handles intelligent route auditing, delivery proof verification, and fuel optimization advice.
@@ -8,13 +10,19 @@ export interface ChatMessage {
   content: string;
 }
 
+const getOpenAIClient = () => {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) return null;
+  return new OpenAI({ apiKey });
+};
+
 export async function askChatGPT(
   messages: ChatMessage[],
   options?: { model?: string; temperature?: number; maxTokens?: number }
 ): Promise<string | null> {
-  const apiKey = process.env.OPENAI_API_KEY;
+  const openai = getOpenAIClient();
 
-  if (!apiKey) {
+  if (!openai) {
     console.warn('⚠️ OPENAI_API_KEY não configurada no arquivo .env.');
     return null;
   }
@@ -24,31 +32,17 @@ export async function askChatGPT(
   const max_tokens = options?.maxTokens ?? 1000;
 
   try {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model,
-        messages,
-        temperature,
-        max_tokens,
-      }),
+    const response = await openai.chat.completions.create({
+      model,
+      messages,
+      temperature,
+      max_tokens,
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('OpenAI API HTTP Error:', response.status, errorText);
-      return null;
-    }
-
-    const data = await response.json();
-    const reply = data.choices?.[0]?.message?.content;
+    const reply = response.choices?.[0]?.message?.content;
     return reply || null;
   } catch (error) {
-    console.error('OpenAI API Connection Error:', error);
+    console.error('OpenAI SDK API Error:', error);
     return null;
   }
 }
