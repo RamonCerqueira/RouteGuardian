@@ -5,8 +5,9 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "../src/generated/client"
+  provider      = "prisma-client-js"
+  output        = "../src/generated/client"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 model Tenant {
@@ -49,6 +50,8 @@ model User {
   refreshTokens      RefreshToken[]
   resetPasswordToken String?        @unique
   resetPasswordExp   DateTime?
+  mustChangePassword Boolean        @default(false)
+  resetRequested     Boolean        @default(false)
   createdAt          DateTime       @default(now())
   updatedAt          DateTime       @updatedAt
 }
