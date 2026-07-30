@@ -3063,6 +3063,8 @@ export namespace Prisma {
     tenantId: string | null
     resetPasswordToken: string | null
     resetPasswordExp: Date | null
+    mustChangePassword: boolean | null
+    resetRequested: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -3077,6 +3079,8 @@ export namespace Prisma {
     tenantId: string | null
     resetPasswordToken: string | null
     resetPasswordExp: Date | null
+    mustChangePassword: boolean | null
+    resetRequested: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -3091,6 +3095,8 @@ export namespace Prisma {
     tenantId: number
     resetPasswordToken: number
     resetPasswordExp: number
+    mustChangePassword: number
+    resetRequested: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -3107,6 +3113,8 @@ export namespace Prisma {
     tenantId?: true
     resetPasswordToken?: true
     resetPasswordExp?: true
+    mustChangePassword?: true
+    resetRequested?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -3121,6 +3129,8 @@ export namespace Prisma {
     tenantId?: true
     resetPasswordToken?: true
     resetPasswordExp?: true
+    mustChangePassword?: true
+    resetRequested?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -3135,6 +3145,8 @@ export namespace Prisma {
     tenantId?: true
     resetPasswordToken?: true
     resetPasswordExp?: true
+    mustChangePassword?: true
+    resetRequested?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -3222,6 +3234,8 @@ export namespace Prisma {
     tenantId: string
     resetPasswordToken: string | null
     resetPasswordExp: Date | null
+    mustChangePassword: boolean
+    resetRequested: boolean
     createdAt: Date
     updatedAt: Date
     _count: UserCountAggregateOutputType | null
@@ -3253,6 +3267,8 @@ export namespace Prisma {
     tenantId?: boolean
     resetPasswordToken?: boolean
     resetPasswordExp?: boolean
+    mustChangePassword?: boolean
+    resetRequested?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
@@ -3271,6 +3287,8 @@ export namespace Prisma {
     tenantId?: boolean
     resetPasswordToken?: boolean
     resetPasswordExp?: boolean
+    mustChangePassword?: boolean
+    resetRequested?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
@@ -3286,6 +3304,8 @@ export namespace Prisma {
     tenantId?: boolean
     resetPasswordToken?: boolean
     resetPasswordExp?: boolean
+    mustChangePassword?: boolean
+    resetRequested?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
@@ -3301,11 +3321,13 @@ export namespace Prisma {
     tenantId?: boolean
     resetPasswordToken?: boolean
     resetPasswordExp?: boolean
+    mustChangePassword?: boolean
+    resetRequested?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "name" | "role" | "status" | "tenantId" | "resetPasswordToken" | "resetPasswordExp" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "name" | "role" | "status" | "tenantId" | "resetPasswordToken" | "resetPasswordExp" | "mustChangePassword" | "resetRequested" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
     routes?: boolean | User$routesArgs<ExtArgs>
@@ -3336,6 +3358,8 @@ export namespace Prisma {
       tenantId: string
       resetPasswordToken: string | null
       resetPasswordExp: Date | null
+      mustChangePassword: boolean
+      resetRequested: boolean
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["user"]>
@@ -3773,6 +3797,8 @@ export namespace Prisma {
     readonly tenantId: FieldRef<"User", 'String'>
     readonly resetPasswordToken: FieldRef<"User", 'String'>
     readonly resetPasswordExp: FieldRef<"User", 'DateTime'>
+    readonly mustChangePassword: FieldRef<"User", 'Boolean'>
+    readonly resetRequested: FieldRef<"User", 'Boolean'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
   }
@@ -11533,6 +11559,8 @@ export namespace Prisma {
     tenantId: 'tenantId',
     resetPasswordToken: 'resetPasswordToken',
     resetPasswordExp: 'resetPasswordExp',
+    mustChangePassword: 'mustChangePassword',
+    resetRequested: 'resetRequested',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -11868,6 +11896,8 @@ export namespace Prisma {
     tenantId?: StringFilter<"User"> | string
     resetPasswordToken?: StringNullableFilter<"User"> | string | null
     resetPasswordExp?: DateTimeNullableFilter<"User"> | Date | string | null
+    mustChangePassword?: BoolFilter<"User"> | boolean
+    resetRequested?: BoolFilter<"User"> | boolean
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
@@ -11885,6 +11915,8 @@ export namespace Prisma {
     tenantId?: SortOrder
     resetPasswordToken?: SortOrderInput | SortOrder
     resetPasswordExp?: SortOrderInput | SortOrder
+    mustChangePassword?: SortOrder
+    resetRequested?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     tenant?: TenantOrderByWithRelationInput
@@ -11905,6 +11937,8 @@ export namespace Prisma {
     status?: StringFilter<"User"> | string
     tenantId?: StringFilter<"User"> | string
     resetPasswordExp?: DateTimeNullableFilter<"User"> | Date | string | null
+    mustChangePassword?: BoolFilter<"User"> | boolean
+    resetRequested?: BoolFilter<"User"> | boolean
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
@@ -11922,6 +11956,8 @@ export namespace Prisma {
     tenantId?: SortOrder
     resetPasswordToken?: SortOrderInput | SortOrder
     resetPasswordExp?: SortOrderInput | SortOrder
+    mustChangePassword?: SortOrder
+    resetRequested?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
@@ -11942,6 +11978,8 @@ export namespace Prisma {
     tenantId?: StringWithAggregatesFilter<"User"> | string
     resetPasswordToken?: StringNullableWithAggregatesFilter<"User"> | string | null
     resetPasswordExp?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    mustChangePassword?: BoolWithAggregatesFilter<"User"> | boolean
+    resetRequested?: BoolWithAggregatesFilter<"User"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
@@ -12658,6 +12696,8 @@ export namespace Prisma {
     status?: string
     resetPasswordToken?: string | null
     resetPasswordExp?: Date | string | null
+    mustChangePassword?: boolean
+    resetRequested?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     tenant: TenantCreateNestedOneWithoutUsersInput
@@ -12675,6 +12715,8 @@ export namespace Prisma {
     tenantId: string
     resetPasswordToken?: string | null
     resetPasswordExp?: Date | string | null
+    mustChangePassword?: boolean
+    resetRequested?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     routes?: RouteUncheckedCreateNestedManyWithoutDriverInput
@@ -12690,6 +12732,8 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    resetRequested?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tenant?: TenantUpdateOneRequiredWithoutUsersNestedInput
@@ -12707,6 +12751,8 @@ export namespace Prisma {
     tenantId?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    resetRequested?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     routes?: RouteUncheckedUpdateManyWithoutDriverNestedInput
@@ -12723,6 +12769,8 @@ export namespace Prisma {
     tenantId: string
     resetPasswordToken?: string | null
     resetPasswordExp?: Date | string | null
+    mustChangePassword?: boolean
+    resetRequested?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -12736,6 +12784,8 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    resetRequested?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12750,6 +12800,8 @@ export namespace Prisma {
     tenantId?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    resetRequested?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13635,6 +13687,11 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type TenantScalarRelationFilter = {
     is?: TenantWhereInput
     isNot?: TenantWhereInput
@@ -13660,6 +13717,8 @@ export namespace Prisma {
     tenantId?: SortOrder
     resetPasswordToken?: SortOrder
     resetPasswordExp?: SortOrder
+    mustChangePassword?: SortOrder
+    resetRequested?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -13674,6 +13733,8 @@ export namespace Prisma {
     tenantId?: SortOrder
     resetPasswordToken?: SortOrder
     resetPasswordExp?: SortOrder
+    mustChangePassword?: SortOrder
+    resetRequested?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -13688,8 +13749,18 @@ export namespace Prisma {
     tenantId?: SortOrder
     resetPasswordToken?: SortOrder
     resetPasswordExp?: SortOrder
+    mustChangePassword?: SortOrder
+    resetRequested?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type UserScalarRelationFilter = {
@@ -13843,11 +13914,6 @@ export namespace Prisma {
     geofenceRadius?: SortOrder
   }
 
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
   export type VehicleScalarRelationFilter = {
     is?: VehicleWhereInput
     isNot?: VehicleWhereInput
@@ -13916,14 +13982,6 @@ export namespace Prisma {
   export type RouteSumOrderByAggregateInput = {
     plannedDistance?: SortOrder
     plannedTime?: SortOrder
-  }
-
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -14433,6 +14491,10 @@ export namespace Prisma {
     connect?: RefreshTokenWhereUniqueInput | RefreshTokenWhereUniqueInput[]
   }
 
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
   export type TenantUpdateOneRequiredWithoutUsersNestedInput = {
     create?: XOR<TenantCreateWithoutUsersInput, TenantUncheckedCreateWithoutUsersInput>
     connectOrCreate?: TenantCreateOrConnectWithoutUsersInput
@@ -14675,10 +14737,6 @@ export namespace Prisma {
     connectOrCreate?: LocationLogCreateOrConnectWithoutRouteInput | LocationLogCreateOrConnectWithoutRouteInput[]
     createMany?: LocationLogCreateManyRouteInputEnvelope
     connect?: LocationLogWhereUniqueInput | LocationLogWhereUniqueInput[]
-  }
-
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
   }
 
   export type UserUpdateOneRequiredWithoutRoutesNestedInput = {
@@ -14998,6 +15056,19 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type NestedFloatFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -15023,19 +15094,6 @@ export namespace Prisma {
     _sum?: NestedFloatFilter<$PrismaModel>
     _min?: NestedFloatFilter<$PrismaModel>
     _max?: NestedFloatFilter<$PrismaModel>
-  }
-
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedBoolNullableFilter<$PrismaModel = never> = {
@@ -15092,6 +15150,8 @@ export namespace Prisma {
     status?: string
     resetPasswordToken?: string | null
     resetPasswordExp?: Date | string | null
+    mustChangePassword?: boolean
+    resetRequested?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     routes?: RouteCreateNestedManyWithoutDriverInput
@@ -15107,6 +15167,8 @@ export namespace Prisma {
     status?: string
     resetPasswordToken?: string | null
     resetPasswordExp?: Date | string | null
+    mustChangePassword?: boolean
+    resetRequested?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     routes?: RouteUncheckedCreateNestedManyWithoutDriverInput
@@ -15328,6 +15390,8 @@ export namespace Prisma {
     tenantId?: StringFilter<"User"> | string
     resetPasswordToken?: StringNullableFilter<"User"> | string | null
     resetPasswordExp?: DateTimeNullableFilter<"User"> | Date | string | null
+    mustChangePassword?: BoolFilter<"User"> | boolean
+    resetRequested?: BoolFilter<"User"> | boolean
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
   }
@@ -15694,6 +15758,8 @@ export namespace Prisma {
     status?: string
     resetPasswordToken?: string | null
     resetPasswordExp?: Date | string | null
+    mustChangePassword?: boolean
+    resetRequested?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     tenant: TenantCreateNestedOneWithoutUsersInput
@@ -15710,6 +15776,8 @@ export namespace Prisma {
     tenantId: string
     resetPasswordToken?: string | null
     resetPasswordExp?: Date | string | null
+    mustChangePassword?: boolean
+    resetRequested?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     routes?: RouteUncheckedCreateNestedManyWithoutDriverInput
@@ -15740,6 +15808,8 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    resetRequested?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tenant?: TenantUpdateOneRequiredWithoutUsersNestedInput
@@ -15756,6 +15826,8 @@ export namespace Prisma {
     tenantId?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    resetRequested?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     routes?: RouteUncheckedUpdateManyWithoutDriverNestedInput
@@ -16108,6 +16180,8 @@ export namespace Prisma {
     status?: string
     resetPasswordToken?: string | null
     resetPasswordExp?: Date | string | null
+    mustChangePassword?: boolean
+    resetRequested?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     tenant: TenantCreateNestedOneWithoutUsersInput
@@ -16124,6 +16198,8 @@ export namespace Prisma {
     tenantId: string
     resetPasswordToken?: string | null
     resetPasswordExp?: Date | string | null
+    mustChangePassword?: boolean
+    resetRequested?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -16322,6 +16398,8 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    resetRequested?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     tenant?: TenantUpdateOneRequiredWithoutUsersNestedInput
@@ -16338,6 +16416,8 @@ export namespace Prisma {
     tenantId?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    resetRequested?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -16819,6 +16899,8 @@ export namespace Prisma {
     status?: string
     resetPasswordToken?: string | null
     resetPasswordExp?: Date | string | null
+    mustChangePassword?: boolean
+    resetRequested?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -16896,6 +16978,8 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    resetRequested?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     routes?: RouteUpdateManyWithoutDriverNestedInput
@@ -16911,6 +16995,8 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    resetRequested?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     routes?: RouteUncheckedUpdateManyWithoutDriverNestedInput
@@ -16926,6 +17012,8 @@ export namespace Prisma {
     status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetPasswordExp?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    mustChangePassword?: BoolFieldUpdateOperationsInput | boolean
+    resetRequested?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

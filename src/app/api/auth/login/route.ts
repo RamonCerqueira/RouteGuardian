@@ -99,6 +99,7 @@ export async function POST(req: NextRequest) {
           name: user.name,
           email: user.email,
           role: user.role,
+          mustChangePassword: user.mustChangePassword ?? false,
           tenant: {
             id: user.tenant.id,
             name: user.tenant.name,

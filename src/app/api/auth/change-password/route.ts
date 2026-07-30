@@ -5,72 +5,49 @@ import { verifyAccessToken } from '@/lib/jwt';
 
 export async function POST(req: NextRequest) {
   try {
-    // 1. Authenticate user via access token
-    const authHeader = req.headers.get('authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    const { userId, email, newPassword } = await req.json();
+
+    if (!newPassword || newPassword.trim().length < 8) {
       return NextResponse.json(
-        { success: false, message: 'Não autorizado. Token ausente.' },
-        { status: 401 }
-      );
-    }
-
-    const token = authHeader.split(' ')[1];
-    const decoded = verifyAccessToken(token);
-
-    if (!decoded) {
-      return NextResponse.json(
-        { success: false, message: 'Não autorizado. Token inválido.' },
-        { status: 401 }
-      );
-    }
-
-    // 2. Validate request body
-    const { currentPassword, newPassword } = await req.json();
-
-    if (!currentPassword || !newPassword) {
-      return NextResponse.json(
-        { success: false, message: 'Senha atual e nova senha são obrigatórias' },
+        { success: false, message: 'A nova senha deve ter no mínimo 8 caracteres.' },
         { status: 400 }
       );
     }
 
-    // 3. Find user and check current password
-    const user = await prisma.user.findUnique({
-      where: { id: decoded.userId },
-    });
+    // Identify user by userId or email
+    let user = null;
+    if (userId) {
+      user = await prisma.user.findUnique({ where: { id: userId } });
+    } else if (email) {
+      user = await prisma.user.findUnique({ where: { email: email.toLowerCase().trim() } });
+    }
 
     if (!user) {
       return NextResponse.json(
-        { success: false, message: 'Usuário não encontrado' },
+        { success: false, message: 'Usuário não encontrado.' },
         { status: 404 }
       );
     }
 
-    const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
-    if (!isPasswordValid) {
-      return NextResponse.json(
-        { success: false, message: 'Senha atual incorreta' },
-        { status: 400 }
-      );
-    }
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
 
-    // 4. Hash and save new password
-    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
     await prisma.user.update({
       where: { id: user.id },
       data: {
-        password: hashedNewPassword,
+        password: hashedPassword,
+        mustChangePassword: false,
+        resetRequested: false,
       },
     });
 
     return NextResponse.json({
       success: true,
-      message: 'Senha alterada com sucesso!',
+      message: 'Senha redefinida com sucesso! Você já pode utilizar sua nova senha.',
     });
   } catch (error: any) {
-    console.error('Error in change-password route handler:', error);
+    console.error('Error changing password:', error);
     return NextResponse.json(
-      { success: false, message: 'Erro interno no servidor' },
+      { success: false, message: 'Erro interno ao redefinir a senha.' },
       { status: 500 }
     );
   }

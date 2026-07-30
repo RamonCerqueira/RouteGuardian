@@ -49,6 +49,8 @@ model User {
   refreshTokens      RefreshToken[]
   resetPasswordToken String?        @unique
   resetPasswordExp   DateTime?
+  mustChangePassword Boolean        @default(false)
+  resetRequested     Boolean        @default(false)
   createdAt          DateTime       @default(now())
   updatedAt          DateTime       @updatedAt
 }

@@ -44,11 +44,11 @@ export const Button: React.FC<ButtonProps> = ({
       {...props}
     >
       {isLoading ? (
-        <Loader2 className="w-4 h-4 animate-spin" />
+        <Loader2 className="w-4 h-4 animate-spin shrink-0" />
       ) : leftIcon ? (
         <span className="shrink-0">{leftIcon}</span>
       ) : null}
-      <span>{children}</span>
+      <span className="inline-flex items-center justify-center gap-2 whitespace-nowrap">{children}</span>
       {!isLoading && rightIcon && <span className="shrink-0">{rightIcon}</span>}
     </button>
   );

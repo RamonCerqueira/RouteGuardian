@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Shield, Building2, User, Mail, Lock, ArrowRight, Eye, EyeOff, CheckCircle } from 'lucide-react';
+import { TermsOfServiceModal } from '@/components/legal/TermsOfServiceModal';
+import { PrivacyPolicyModal } from '@/components/legal/PrivacyPolicyModal';
 
 export default function CadastroPage() {
   const router = useRouter();
@@ -17,6 +19,8 @@ export default function CadastroPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -272,14 +276,30 @@ export default function CadastroPage() {
               )}
             </button>
 
-            <p className="text-xs text-slate-600 text-center mt-2">
+            <p className="text-xs text-slate-500 text-center mt-2">
               Ao criar sua conta você concorda com nossos{' '}
-              <span className="text-slate-500">Termos de Serviço</span> e{' '}
-              <span className="text-slate-500">Política de Privacidade</span>.
+              <button
+                type="button"
+                onClick={() => setShowTermsModal(true)}
+                className="text-indigo-400 hover:underline"
+              >
+                Termos de Serviço
+              </button>{' '}
+              e{' '}
+              <button
+                type="button"
+                onClick={() => setShowPrivacyModal(true)}
+                className="text-indigo-400 hover:underline"
+              >
+                Política de Privacidade
+              </button>.
             </p>
           </form>
         </div>
       </div>
+
+      <TermsOfServiceModal isOpen={showTermsModal} onClose={() => setShowTermsModal(false)} />
+      <PrivacyPolicyModal isOpen={showPrivacyModal} onClose={() => setShowPrivacyModal(false)} />
     </div>
   );
 }

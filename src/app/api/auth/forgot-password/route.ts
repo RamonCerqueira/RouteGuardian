@@ -1,61 +1,52 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import crypto from 'crypto';
 
 export async function POST(req: NextRequest) {
   try {
     const { email } = await req.json();
 
-    if (!email) {
+    if (!email || typeof email !== 'string') {
       return NextResponse.json(
-        { success: false, message: 'Email é obrigatório' },
+        { success: false, message: 'O e-mail corporativo é obrigatório.' },
         { status: 400 }
       );
     }
 
+    const cleanEmail = email.toLowerCase().trim();
+
+    // Verify if user exists in database
     const user = await prisma.user.findUnique({
-      where: { email },
+      where: { email: cleanEmail },
+      include: { tenant: true },
     });
 
-    // To prevent user enumeration, return a generic success message even if user does not exist
+    // If user is not registered, return explicit error
     if (!user) {
-      return NextResponse.json({
-        success: true,
-        message: 'Se o e-mail estiver cadastrado, as instruções de redefinição foram enviadas.',
-      });
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Este e-mail não está cadastrado no sistema. Verifique o endereço digitado ou entre em contato com o suporte de sua empresa.',
+        },
+        { status: 404 }
+      );
     }
 
-    // Generate secure reset token (64 hex characters)
-    const resetToken = crypto.randomBytes(32).toString('hex');
-    const resetPasswordExp = new Date(Date.now() + 1 * 60 * 60 * 1000); // 1 hour
-
+    // Mark password reset request in the database for the Admin
     await prisma.user.update({
       where: { id: user.id },
       data: {
-        resetPasswordToken: resetToken,
-        resetPasswordExp,
+        resetRequested: true,
       },
     });
 
-    // Simulated email delivery to console for development
-    const resetLink = `${req.nextUrl.origin}/reset-password?token=${resetToken}`;
-    console.log('\n======================================================');
-    console.log('📬 [EMAIL SIMULATOR - RECUPERAÇÃO DE SENHA]');
-    console.log(`Para: ${user.email}`);
-    console.log(`Nome: ${user.name}`);
-    console.log(`Link de Redefinição: ${resetLink}`);
-    console.log('======================================================\n');
-
     return NextResponse.json({
       success: true,
-      message: 'Se o e-mail estiver cadastrado, as instruções de redefinição foram enviadas.',
-      // We return the token locally to simplify developer/QA testing
-      devToken: process.env.NODE_ENV !== 'production' ? resetToken : undefined,
+      message: `Solicitação registrada! O Administrador da sua empresa foi notificado para redefinir sua senha. A nova senha temporária será "senha@123" e você definirá sua nova senha pessoal no próximo login.`,
     });
   } catch (error: any) {
     console.error('Error in forgot-password route handler:', error);
     return NextResponse.json(
-      { success: false, message: 'Erro interno no servidor' },
+      { success: false, message: 'Erro interno no servidor.' },
       { status: 500 }
     );
   }
