@@ -190,6 +190,7 @@ export async function middleware(req: NextRequest) {
     pathname.startsWith('/dashboard') ||
     pathname.startsWith('/routes') ||
     pathname.startsWith('/deliveries') ||
+    pathname.startsWith('/reviews') ||
     pathname.startsWith('/clients') ||
     pathname.startsWith('/vehicles') ||
     pathname.startsWith('/users') ||

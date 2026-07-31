@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/Input';
 import { Toast } from '@/components/ui/Alert';
 import { 
   CheckSquare, Search, Eye, AlertCircle, CheckCircle2, 
-  MapPin, Clock, Camera, FileSignature, ShieldCheck, ShieldAlert 
+  MapPin, Clock, Camera, FileSignature, ShieldCheck, ShieldAlert, Star, MessageSquare
 } from 'lucide-react';
 
 interface AuditDelivery {
@@ -168,9 +168,19 @@ export default function DeliveriesPage() {
           <div className="flex flex-col items-start gap-1">
             <Badge variant={s.variant}>{s.label}</Badge>
             {d.ratingInt && (
-              <span className="text-[10px] text-amber-400 font-bold flex items-center gap-0.5">
-                ⭐ {d.ratingInt}/5
-              </span>
+              <div className="flex items-center gap-1 flex-wrap">
+                <span className="text-[10px] text-amber-400 font-bold flex items-center gap-0.5">
+                  ⭐ {d.ratingInt}/5
+                </span>
+                {d.ratingComment && (
+                  <span 
+                    className="text-[9px] text-indigo-300 bg-indigo-500/15 border border-indigo-500/20 px-1.5 py-0.2 rounded-md font-medium flex items-center gap-0.5" 
+                    title={`Comentário: "${d.ratingComment}"`}
+                  >
+                    <MessageSquare className="w-2.5 h-2.5 text-indigo-400" /> Comentário
+                  </span>
+                )}
+              </div>
             )}
           </div>
         );
@@ -322,6 +332,29 @@ export default function DeliveriesPage() {
                   </div>
                 </div>
               </Card>
+            )}
+
+            {/* Avaliação e Comentário do Cliente */}
+            {selectedDelivery.ratingInt && (
+              <div className="bg-slate-950/60 p-4 rounded-2xl border border-slate-800 space-y-2">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
+                    <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+                    Avaliação do Cliente
+                  </p>
+                  <span className="text-xs font-extrabold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                    {selectedDelivery.ratingInt} / 5 ⭐
+                  </span>
+                </div>
+                {selectedDelivery.ratingComment ? (
+                  <div className="mt-2 bg-slate-900/80 p-3 rounded-xl border border-slate-800/80">
+                    <p className="text-[10px] font-bold text-slate-500 uppercase mb-1">Comentário Enviado:</p>
+                    <p className="text-xs text-slate-200 italic">"{selectedDelivery.ratingComment}"</p>
+                  </div>
+                ) : (
+                  <p className="text-[11px] text-slate-500 italic mt-1">O cliente enviou a nota sem comentário em texto.</p>
+                )}
+              </div>
             )}
 
             {/* Notes */}

@@ -3,11 +3,13 @@ import path from "path";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  outputFileTracingRoot: path.resolve(__dirname),
+  outputFileTracingRoot: path.join(__dirname),
   outputFileTracingExcludes: {
     '*': [
       'C:/Users/**',
-      'C:/Users/Usuario/**',
+      'C:\\Users\\**',
+      '**/Ambiente de Impressão/**',
+      '**/Ambiente de Rede/**',
     ],
   },
   typescript: {
@@ -15,6 +17,13 @@ const nextConfig: NextConfig = {
   },
   eslint: {
     ignoreDuringBuilds: true,
+  },
+  webpack: (config) => {
+    config.watchOptions = {
+      ...config.watchOptions,
+      ignored: ['**/node_modules/**', 'C:/Users/**', 'C:\\Users\\**'],
+    };
+    return config;
   },
 };
 

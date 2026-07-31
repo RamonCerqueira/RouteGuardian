@@ -3058,6 +3058,7 @@ export namespace Prisma {
     email: string | null
     password: string | null
     name: string | null
+    avatarUrl: string | null
     role: string | null
     status: string | null
     tenantId: string | null
@@ -3074,6 +3075,7 @@ export namespace Prisma {
     email: string | null
     password: string | null
     name: string | null
+    avatarUrl: string | null
     role: string | null
     status: string | null
     tenantId: string | null
@@ -3090,6 +3092,7 @@ export namespace Prisma {
     email: number
     password: number
     name: number
+    avatarUrl: number
     role: number
     status: number
     tenantId: number
@@ -3108,6 +3111,7 @@ export namespace Prisma {
     email?: true
     password?: true
     name?: true
+    avatarUrl?: true
     role?: true
     status?: true
     tenantId?: true
@@ -3124,6 +3128,7 @@ export namespace Prisma {
     email?: true
     password?: true
     name?: true
+    avatarUrl?: true
     role?: true
     status?: true
     tenantId?: true
@@ -3140,6 +3145,7 @@ export namespace Prisma {
     email?: true
     password?: true
     name?: true
+    avatarUrl?: true
     role?: true
     status?: true
     tenantId?: true
@@ -3229,6 +3235,7 @@ export namespace Prisma {
     email: string
     password: string
     name: string
+    avatarUrl: string | null
     role: string
     status: string
     tenantId: string
@@ -3262,6 +3269,7 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     name?: boolean
+    avatarUrl?: boolean
     role?: boolean
     status?: boolean
     tenantId?: boolean
@@ -3282,6 +3290,7 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     name?: boolean
+    avatarUrl?: boolean
     role?: boolean
     status?: boolean
     tenantId?: boolean
@@ -3299,6 +3308,7 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     name?: boolean
+    avatarUrl?: boolean
     role?: boolean
     status?: boolean
     tenantId?: boolean
@@ -3316,6 +3326,7 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     name?: boolean
+    avatarUrl?: boolean
     role?: boolean
     status?: boolean
     tenantId?: boolean
@@ -3327,7 +3338,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "name" | "role" | "status" | "tenantId" | "resetPasswordToken" | "resetPasswordExp" | "mustChangePassword" | "resetRequested" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "name" | "avatarUrl" | "role" | "status" | "tenantId" | "resetPasswordToken" | "resetPasswordExp" | "mustChangePassword" | "resetRequested" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
     routes?: boolean | User$routesArgs<ExtArgs>
@@ -3353,6 +3364,7 @@ export namespace Prisma {
       email: string
       password: string
       name: string
+      avatarUrl: string | null
       role: string
       status: string
       tenantId: string
@@ -3792,6 +3804,7 @@ export namespace Prisma {
     readonly email: FieldRef<"User", 'String'>
     readonly password: FieldRef<"User", 'String'>
     readonly name: FieldRef<"User", 'String'>
+    readonly avatarUrl: FieldRef<"User", 'String'>
     readonly role: FieldRef<"User", 'String'>
     readonly status: FieldRef<"User", 'String'>
     readonly tenantId: FieldRef<"User", 'String'>
@@ -11554,6 +11567,7 @@ export namespace Prisma {
     email: 'email',
     password: 'password',
     name: 'name',
+    avatarUrl: 'avatarUrl',
     role: 'role',
     status: 'status',
     tenantId: 'tenantId',
@@ -11891,6 +11905,7 @@ export namespace Prisma {
     email?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
     name?: StringFilter<"User"> | string
+    avatarUrl?: StringNullableFilter<"User"> | string | null
     role?: StringFilter<"User"> | string
     status?: StringFilter<"User"> | string
     tenantId?: StringFilter<"User"> | string
@@ -11910,6 +11925,7 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     name?: SortOrder
+    avatarUrl?: SortOrderInput | SortOrder
     role?: SortOrder
     status?: SortOrder
     tenantId?: SortOrder
@@ -11933,6 +11949,7 @@ export namespace Prisma {
     NOT?: UserWhereInput | UserWhereInput[]
     password?: StringFilter<"User"> | string
     name?: StringFilter<"User"> | string
+    avatarUrl?: StringNullableFilter<"User"> | string | null
     role?: StringFilter<"User"> | string
     status?: StringFilter<"User"> | string
     tenantId?: StringFilter<"User"> | string
@@ -11951,6 +11968,7 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     name?: SortOrder
+    avatarUrl?: SortOrderInput | SortOrder
     role?: SortOrder
     status?: SortOrder
     tenantId?: SortOrder
@@ -11973,6 +11991,7 @@ export namespace Prisma {
     email?: StringWithAggregatesFilter<"User"> | string
     password?: StringWithAggregatesFilter<"User"> | string
     name?: StringWithAggregatesFilter<"User"> | string
+    avatarUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
     role?: StringWithAggregatesFilter<"User"> | string
     status?: StringWithAggregatesFilter<"User"> | string
     tenantId?: StringWithAggregatesFilter<"User"> | string
@@ -12692,6 +12711,7 @@ export namespace Prisma {
     email: string
     password: string
     name: string
+    avatarUrl?: string | null
     role: string
     status?: string
     resetPasswordToken?: string | null
@@ -12710,6 +12730,7 @@ export namespace Prisma {
     email: string
     password: string
     name: string
+    avatarUrl?: string | null
     role: string
     status?: string
     tenantId: string
@@ -12728,6 +12749,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -12746,6 +12768,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     tenantId?: StringFieldUpdateOperationsInput | string
@@ -12764,6 +12787,7 @@ export namespace Prisma {
     email: string
     password: string
     name: string
+    avatarUrl?: string | null
     role: string
     status?: string
     tenantId: string
@@ -12780,6 +12804,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -12795,6 +12820,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     tenantId?: StringFieldUpdateOperationsInput | string
@@ -13712,6 +13738,7 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     name?: SortOrder
+    avatarUrl?: SortOrder
     role?: SortOrder
     status?: SortOrder
     tenantId?: SortOrder
@@ -13728,6 +13755,7 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     name?: SortOrder
+    avatarUrl?: SortOrder
     role?: SortOrder
     status?: SortOrder
     tenantId?: SortOrder
@@ -13744,6 +13772,7 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     name?: SortOrder
+    avatarUrl?: SortOrder
     role?: SortOrder
     status?: SortOrder
     tenantId?: SortOrder
@@ -15146,6 +15175,7 @@ export namespace Prisma {
     email: string
     password: string
     name: string
+    avatarUrl?: string | null
     role: string
     status?: string
     resetPasswordToken?: string | null
@@ -15163,6 +15193,7 @@ export namespace Prisma {
     email: string
     password: string
     name: string
+    avatarUrl?: string | null
     role: string
     status?: string
     resetPasswordToken?: string | null
@@ -15385,6 +15416,7 @@ export namespace Prisma {
     email?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
     name?: StringFilter<"User"> | string
+    avatarUrl?: StringNullableFilter<"User"> | string | null
     role?: StringFilter<"User"> | string
     status?: StringFilter<"User"> | string
     tenantId?: StringFilter<"User"> | string
@@ -15754,6 +15786,7 @@ export namespace Prisma {
     email: string
     password: string
     name: string
+    avatarUrl?: string | null
     role: string
     status?: string
     resetPasswordToken?: string | null
@@ -15771,6 +15804,7 @@ export namespace Prisma {
     email: string
     password: string
     name: string
+    avatarUrl?: string | null
     role: string
     status?: string
     tenantId: string
@@ -15804,6 +15838,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15821,6 +15856,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     tenantId?: StringFieldUpdateOperationsInput | string
@@ -16176,6 +16212,7 @@ export namespace Prisma {
     email: string
     password: string
     name: string
+    avatarUrl?: string | null
     role: string
     status?: string
     resetPasswordToken?: string | null
@@ -16193,6 +16230,7 @@ export namespace Prisma {
     email: string
     password: string
     name: string
+    avatarUrl?: string | null
     role: string
     status?: string
     tenantId: string
@@ -16394,6 +16432,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16411,6 +16450,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     tenantId?: StringFieldUpdateOperationsInput | string
@@ -16895,6 +16935,7 @@ export namespace Prisma {
     email: string
     password: string
     name: string
+    avatarUrl?: string | null
     role: string
     status?: string
     resetPasswordToken?: string | null
@@ -16974,6 +17015,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16991,6 +17033,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17008,6 +17051,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     resetPasswordToken?: NullableStringFieldUpdateOperationsInput | string | null

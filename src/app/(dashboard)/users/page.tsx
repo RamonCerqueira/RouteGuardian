@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Table, Column } from '@/components/ui/Table';
 import { Button } from '@/components/ui/Button';
@@ -14,7 +14,7 @@ import { Toast } from '@/components/ui/Alert';
 import { User } from '@/types';
 import {
   Plus, Search, MoreVertical, Edit, Trash2, Shield,
-  AlertTriangle, ArrowRight, Users,
+  AlertTriangle, ArrowRight, Users, Camera, Upload, Image as ImageIcon, X, RefreshCw
 } from 'lucide-react';
 
 interface PlanInfo {
@@ -40,10 +40,13 @@ export default function UsersPage() {
   const [planInfo, setPlanInfo] = useState<PlanInfo | null>(null);
   const [loadingUsers, setLoadingUsers] = useState(true);
 
-  // Reset page when filter or search changes
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [search, roleFilter]);
+  // Camera & Upload state
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Form State
   const [formData, setFormData] = useState<{
@@ -51,7 +54,88 @@ export default function UsersPage() {
     email: string;
     password: string;
     role: User['role'];
-  }>({ name: '', email: '', password: '', role: 'DRIVER' });
+    avatarUrl: string;
+  }>({ name: '', email: '', password: '', role: 'DRIVER', avatarUrl: '' });
+
+  // Reset page when filter or search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, roleFilter]);
+
+  // ── Camera Helpers ──────────────────────────────────────────────────
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+      setCameraStream(stream);
+      setIsCameraOpen(true);
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch (err) {
+      console.error('Failed to access camera:', err);
+      showToast('Não foi possível acessar a câmera. Verifique as permissões.', 'error');
+    }
+  };
+
+  const stopCamera = () => {
+    if (cameraStream) {
+      cameraStream.getTracks().forEach((track) => track.stop());
+      setCameraStream(null);
+    }
+    setIsCameraOpen(false);
+  };
+
+  const capturePhoto = async () => {
+    if (!videoRef.current) return;
+    const canvas = document.createElement('canvas');
+    canvas.width = videoRef.current.videoWidth || 640;
+    canvas.height = videoRef.current.videoHeight || 480;
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+      stopCamera();
+      await uploadAvatarImage(dataUrl);
+    }
+  };
+
+  // ── Upload Helper ──────────────────────────────────────────────────
+  const uploadAvatarImage = async (base64OrUrl: string) => {
+    setUploadingAvatar(true);
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: base64OrUrl }),
+      });
+      const data = await res.json();
+      if (data.success && data.url) {
+        setFormData((prev) => ({ ...prev, avatarUrl: data.url }));
+        showToast('Foto do avatar atualizada!');
+      } else {
+        setFormData((prev) => ({ ...prev, avatarUrl: base64OrUrl }));
+      }
+    } catch (e) {
+      console.error('Failed to upload image:', e);
+      setFormData((prev) => ({ ...prev, avatarUrl: base64OrUrl }));
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
+
+  const handleFileSelect = (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      showToast('Selecione um arquivo de imagem válido (PNG, JPG, WEBP).', 'error');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      if (e.target?.result) {
+        await uploadAvatarImage(e.target.result as string);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   // ── Fetch users from API ──────────────────────────────────────────────
   const fetchUsers = useCallback(async () => {
@@ -87,14 +171,22 @@ export default function UsersPage() {
       );
       return;
     }
+  const handleOpenCreateModal = () => {
+    if (planInfo && !planInfo.canAddUser) {
+      showToast(
+        `Limite do plano ${planInfo.planName} atingido (${planInfo.maxUsers} usuário(s)). Faça upgrade para adicionar mais.`,
+        'error'
+      );
+      return;
+    }
     setEditingUser(null);
-    setFormData({ name: '', email: '', password: '', role: 'DRIVER' });
+    setFormData({ name: '', email: '', password: '', role: 'DRIVER', avatarUrl: '' });
     setIsModalOpen(true);
   };
 
   const handleOpenEditModal = (user: User) => {
     setEditingUser(user);
-    setFormData({ name: user.name, email: user.email, password: '', role: user.role });
+    setFormData({ name: user.name, email: user.email, password: '', role: user.role, avatarUrl: user.avatarUrl || '' });
     setIsModalOpen(true);
   };
 
@@ -114,6 +206,7 @@ export default function UsersPage() {
           id: editingUser.id,
           name: formData.name,
           role: formData.role,
+          avatarUrl: formData.avatarUrl,
         };
         if (formData.password && formData.password.trim()) {
           payload.password = formData.password;
@@ -194,7 +287,7 @@ export default function UsersPage() {
       header: 'Usuário',
       cell: (user) => (
         <div className="flex items-center gap-3">
-          <Avatar name={user.name} status={user.status === 'ACTIVE' ? 'online' : 'offline'} />
+          <Avatar src={user.avatarUrl} name={user.name} status={user.status === 'ACTIVE' ? 'online' : 'offline'} />
           <div>
             <p className="font-bold text-slate-100">{user.name}</p>
             <p className="text-[11px] text-slate-400">{user.email}</p>
@@ -374,6 +467,77 @@ export default function UsersPage() {
         }
       >
         <div className="space-y-4">
+          {/* Avatar Upload / Camera Drag & Drop Section */}
+          <div className="space-y-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300">
+              Foto de Perfil / Avatar (Entregador)
+            </label>
+            <div className="flex items-center gap-4 bg-slate-950/60 p-3.5 rounded-2xl border border-slate-800">
+              <Avatar src={formData.avatarUrl} name={formData.name || 'Novo Usuário'} size="lg" />
+              <div className="flex-1 space-y-2">
+                {/* Drag & Drop Box */}
+                <div
+                  onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+                  onDragLeave={() => setIsDragging(false)}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setIsDragging(false);
+                    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                      handleFileSelect(e.dataTransfer.files[0]);
+                    }
+                  }}
+                  onClick={() => fileInputRef.current?.click()}
+                  className={`border-2 border-dashed rounded-xl p-3 text-center cursor-pointer transition-all ${
+                    isDragging
+                      ? 'border-indigo-500 bg-indigo-500/10'
+                      : 'border-slate-800 hover:border-slate-700 bg-slate-900/60'
+                  }`}
+                >
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        handleFileSelect(e.target.files[0]);
+                      }
+                    }}
+                  />
+                  <div className="flex items-center justify-center gap-2 text-xs font-semibold text-slate-300">
+                    <Upload className="w-4 h-4 text-indigo-400" />
+                    <span>{uploadingAvatar ? 'Carregando foto...' : 'Arraste uma imagem ou clique para selecionar'}</span>
+                  </div>
+                </div>
+
+                {/* Camera Trigger */}
+                <div className="flex items-center gap-2">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    className="text-xs py-1 px-3 text-indigo-300 border-indigo-500/30 hover:bg-indigo-500/10"
+                    leftIcon={<Camera className="w-3.5 h-3.5 text-indigo-400" />}
+                    onClick={startCamera}
+                  >
+                    Tirar Foto na Câmera
+                  </Button>
+                  {formData.avatarUrl && (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="ghost"
+                      className="text-xs py-1 px-2 text-rose-400 hover:bg-rose-500/10"
+                      onClick={() => setFormData({ ...formData, avatarUrl: '' })}
+                    >
+                      Remover Foto
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
           <Input
             label="Nome Completo"
             placeholder="Ex: João da Silva"
@@ -407,6 +571,35 @@ export default function UsersPage() {
           />
         </div>
       </Modal>
+
+      {/* WebCam Camera Modal */}
+      {isCameraOpen && (
+        <Modal
+          isOpen={isCameraOpen}
+          onClose={stopCamera}
+          title="Capturar Foto do Entregador"
+          maxWidth="sm"
+          footer={
+            <div className="flex items-center justify-between w-full">
+              <Button variant="ghost" onClick={stopCamera}>
+                Cancelar
+              </Button>
+              <Button onClick={capturePhoto} leftIcon={<Camera className="w-4 h-4" />}>
+                Tirar Foto
+              </Button>
+            </div>
+          }
+        >
+          <div className="flex flex-col items-center justify-center space-y-3">
+            <div className="relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-slate-800">
+              <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
+            </div>
+            <p className="text-xs text-slate-400 text-center">
+              Posicione o entregador em frente à câmera e clique em "Tirar Foto".
+            </p>
+          </div>
+        </Modal>
+      )}
 
       {/* Toast */}
       {toastMessage && (

@@ -42,6 +42,7 @@ model User {
   email              String         @unique
   password           String
   name               String
+  avatarUrl          String?
   role               String // ADMIN, SUPERVISOR, DRIVER
   status             String         @default("ACTIVE") // ACTIVE, PENDING, INACTIVE
   tenantId           String

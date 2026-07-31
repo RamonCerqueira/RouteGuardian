@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { LayoutDashboard, Users, Settings, LogOut, Sparkles, Navigation, CheckSquare, Target, Truck, BarChart3, ShieldCheck } from 'lucide-react';
+import { LayoutDashboard, Users, Settings, LogOut, Sparkles, Navigation, CheckSquare, Target, Truck, BarChart3, ShieldCheck, Star } from 'lucide-react';
 import { Avatar } from '../ui/Avatar';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -44,6 +44,7 @@ export const Sidebar: React.FC = () => {
     { id: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
     { id: '/routes', label: 'Gestão de Rotas', icon: <Navigation className="w-5 h-5" /> },
     { id: '/deliveries', label: 'Auditoria Entregas', icon: <CheckSquare className="w-5 h-5" /> },
+    { id: '/reviews', label: 'Avaliações & Rank', icon: <Star className="w-5 h-5" /> },
     { id: '/clients', label: 'Clientes & Geofence', icon: <Target className="w-5 h-5" /> },
     { id: '/vehicles', label: 'Veículos & Consumo', icon: <Truck className="w-5 h-5" /> },
     { id: '/users', label: 'Controle de Usuários', icon: <Users className="w-5 h-5" /> },

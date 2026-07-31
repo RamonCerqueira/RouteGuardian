@@ -24,6 +24,7 @@ export async function GET(req: NextRequest) {
         id: true,
         name: true,
         email: true,
+        avatarUrl: true,
         role: true,
         status: true,
         createdAt: true,
@@ -60,7 +61,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, message: 'Não autorizado. Apenas admins podem criar usuários.' }, { status: 401 });
     }
 
-    const { name, email, password, role } = await req.json();
+    const { name, email, password, role, avatarUrl } = await req.json();
 
     if (!name || !email || !password || !role) {
       return NextResponse.json({ success: false, message: 'Todos os campos são obrigatórios.' }, { status: 400 });
@@ -103,10 +104,11 @@ export async function POST(req: NextRequest) {
         email,
         password: hashedPassword,
         role,
+        avatarUrl: avatarUrl || null,
         status: 'ACTIVE',
         tenantId: auth.tenantId,
       },
-      select: { id: true, name: true, email: true, role: true, status: true, createdAt: true },
+      select: { id: true, name: true, email: true, avatarUrl: true, role: true, status: true, createdAt: true },
     });
 
     return NextResponse.json({ success: true, message: 'Usuário criado com sucesso.', user });
@@ -124,7 +126,7 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ success: false, message: 'Não autorizado.' }, { status: 401 });
     }
 
-    const { id, name, role, status, password } = await req.json();
+    const { id, name, role, status, password, avatarUrl } = await req.json();
 
     if (!id) {
       return NextResponse.json({ success: false, message: 'ID do usuário é obrigatório.' }, { status: 400 });
@@ -158,6 +160,7 @@ export async function PATCH(req: NextRequest) {
       ...(name && { name }),
       ...(role && { role }),
       ...(status && { status }),
+      ...(avatarUrl !== undefined && { avatarUrl }),
     };
 
     if (password && password.trim().length > 0) {
@@ -170,7 +173,7 @@ export async function PATCH(req: NextRequest) {
     const updated = await prisma.user.update({
       where: { id },
       data: updateData,
-      select: { id: true, name: true, email: true, role: true, status: true, createdAt: true },
+      select: { id: true, name: true, email: true, avatarUrl: true, role: true, status: true, createdAt: true },
     });
 
     return NextResponse.json({ success: true, message: 'Usuário atualizado com sucesso.', user: updated });
