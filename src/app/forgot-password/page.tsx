@@ -64,11 +64,11 @@ export default function ForgotPasswordPage() {
       <div className="w-full max-w-md z-10">
         {/* Header */}
         <div className="text-center mb-8 space-y-2">
-          <div className="inline-flex p-3 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-500 text-white shadow-xl shadow-indigo-600/30 mb-1">
-            <KeyRound className="w-6 h-6" />
+          <div className="inline-flex p-2 rounded-2xl bg-slate-950 border border-slate-800 text-white shadow-xl shadow-indigo-600/10 mb-1">
+            <img src="/logo.png" alt="RouteGuardian Logo" className="w-8 h-8 object-contain" />
           </div>
           <h1 className="text-2xl font-extrabold text-white tracking-tight">Solicitação de Redefinição</h1>
-          <p className="text-xs text-slate-400">RouteGuardian AI • Portal Corporativo de Rastreamento</p>
+          <p className="text-xs text-slate-400">RouteGuardian • Portal Corporativo de Rastreamento</p>
         </div>
 
         {/* Alerts */}

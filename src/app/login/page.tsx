@@ -225,8 +225,8 @@ function LoginContent() {
             {/* Main Headline */}
             <div className="space-y-3">
               <div className="flex items-center gap-3">
-                <div className="p-3 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-500 text-white shadow-xl shadow-indigo-500/30">
-                  <ShieldCheck className="w-7 h-7" />
+                <div className="p-2 rounded-2xl bg-slate-950 border border-slate-800 shadow-xl shadow-indigo-500/10 flex items-center justify-center">
+                  <img src="/logo.png" alt="RouteGuardian Logo" className="w-9 h-9 object-contain" />
                 </div>
                 <span className="text-2xl font-black tracking-tight text-white">RouteGuardian</span>
               </div>

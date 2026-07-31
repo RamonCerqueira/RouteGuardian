@@ -158,11 +158,11 @@ export default function ResetPasswordPage() {
 
       <div className="w-full max-w-md z-10">
         <div className="text-center mb-8">
-          <div className="inline-flex p-3 rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 mb-3 animate-pulse">
-            <Sparkles className="w-6 h-6" />
+          <div className="inline-flex p-2 rounded-2xl bg-slate-950 border border-slate-800 text-white shadow-lg shadow-indigo-600/10 mb-3">
+            <img src="/logo.png" alt="RouteGuardian Logo" className="w-8 h-8 object-contain" />
           </div>
-          <h1 className="text-2xl font-extrabold text-white tracking-tight">Delivery Guardian AI</h1>
-          <p className="text-xs text-slate-400 mt-1">SaaS de Auditoria Inteligente de Entregas</p>
+          <h1 className="text-2xl font-extrabold text-white tracking-tight">RouteGuardian</h1>
+          <p className="text-xs text-slate-400 mt-1">Plataforma de Auditoria Inteligente de Entregas</p>
         </div>
 
         <Suspense fallback={

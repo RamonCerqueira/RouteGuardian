@@ -494,7 +494,7 @@ export default function DriverPage() {
       {/* ── Header ─────────────────────────────────────────────────────── */}
       <header className="h-14 bg-slate-900 border-b border-slate-800 px-4 flex items-center justify-between sticky top-0 z-20">
         <div className="flex items-center gap-2">
-          <Truck className="w-5 h-5 text-indigo-400" />
+          <img src="/logo.png" alt="RouteGuardian Logo" className="w-6 h-6 object-contain" />
           <span className="font-extrabold text-sm text-slate-100 tracking-tight">Painel do Entregador</span>
         </div>
         <div className="flex items-center gap-2">
