@@ -1,8 +1,15 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  // Desabilita linting e type check durante o build caso haja alguma incompatibilidade pontual de migração
+  outputFileTracingRoot: path.resolve(__dirname),
+  outputFileTracingExcludes: {
+    '*': [
+      'C:/Users/**',
+      'C:/Users/Usuario/**',
+    ],
+  },
   typescript: {
     ignoreBuildErrors: true,
   },

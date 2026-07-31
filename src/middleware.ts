@@ -62,6 +62,16 @@ export async function middleware(req: NextRequest) {
     pathname === '/login' ||
     pathname === '/cadastro' ||
     pathname === '/pricing' ||
+    pathname === '/terms' ||
+    pathname === '/privacy' ||
+    pathname === '/forgot-password' ||
+    pathname === '/reset-password' ||
+    pathname.startsWith('/tracking');
+
+  // ─── Auth pages (redirect logged-in users to dashboard/driver) ──────────────
+  const isAuthPage =
+    pathname === '/login' ||
+    pathname === '/cadastro' ||
     pathname === '/forgot-password' ||
     pathname === '/reset-password';
 
@@ -72,7 +82,8 @@ export async function middleware(req: NextRequest) {
     pathname === '/api/auth/refresh' ||
     pathname === '/api/auth/forgot-password' ||
     pathname === '/api/auth/reset-password' ||
-    pathname === '/api/stripe/webhook'; // Stripe sends unsigned (but verified inside)
+    pathname === '/api/stripe/webhook' ||
+    pathname.startsWith('/api/tracking');
 
   // ─── Static assets bypass ───────────────────────────────────────────────────
   if (
@@ -113,8 +124,13 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // ─── Authenticated: redirect away from public pages ────────────────────────
-  if (isPublicPage) {
+  // ─── Tracking route allowed for logged-in users too ─────────────────────────
+  if (pathname.startsWith('/tracking')) {
+    return NextResponse.next();
+  }
+
+  // ─── Authenticated: redirect away from auth pages ──────────────────────────
+  if (isAuthPage) {
     const url = req.nextUrl.clone();
     if (decoded.role === 'DRIVER') {
       url.pathname = '/driver';
