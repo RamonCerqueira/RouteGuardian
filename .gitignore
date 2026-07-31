@@ -8,3 +8,7 @@ dist/
 scratch/
 *.tsbuildinfo
 *.log
+imagens.md
+email.md
+PROJETO_BASE.md
+prompts.md   
