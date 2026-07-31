@@ -67,11 +67,11 @@ export const Sidebar: React.FC = () => {
       {/* Brand Header */}
       <div>
         <div className="flex items-center gap-3 px-6 h-16 border-b border-slate-800/80 dark:border-slate-800/80 light:border-slate-200">
-          <div className="p-2 rounded-xl bg-indigo-600 text-white shadow-lg shadow-indigo-600/30">
-            <Sparkles className="w-5 h-5" />
+          <div className="p-1.5 rounded-xl bg-slate-950 border border-slate-800 shadow-lg flex items-center justify-center">
+            <img src="/logo.png" alt="RouteGuardian Logo" className="w-7 h-7 object-contain" />
           </div>
           <div>
-            <h1 className="font-extrabold text-sm text-slate-100 dark:text-slate-100 light:text-slate-900 tracking-tight">Delivery Guardian</h1>
+            <h1 className="font-extrabold text-sm text-slate-100 dark:text-slate-100 light:text-slate-900 tracking-tight">RouteGuardian</h1>
             <p className="text-[10px] font-semibold text-indigo-400 dark:text-indigo-400 light:text-indigo-600 uppercase tracking-widest">SaaS Auditor</p>
           </div>
         </div>
