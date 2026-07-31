@@ -109,10 +109,15 @@ export default function DashboardPage() {
               activePoints.push({
                 id: d.id,
                 name: d.client.name,
-                sequence: activePoints.length,
+                sequence: d.sequence || activePoints.length,
                 latitude: d.client.latitude,
                 longitude: d.client.longitude,
                 status: d.status,
+                driverName: r.driver?.name,
+                driverAvatarUrl: r.driver?.avatarUrl,
+                routeName: r.name,
+                routeId: r.id,
+                scheduledDepartureAt: r.scheduledDepartureAt,
               });
             }
           });

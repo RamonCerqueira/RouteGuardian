@@ -198,6 +198,7 @@ exports.Prisma.RouteScalarFieldEnum = {
   driverId: 'driverId',
   vehicleId: 'vehicleId',
   tenantId: 'tenantId',
+  scheduledDepartureAt: 'scheduledDepartureAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   returnToDepot: 'returnToDepot'

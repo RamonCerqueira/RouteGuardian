@@ -110,6 +110,7 @@ model Route {
   tenant          Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   deliveries      Delivery[]
   locationLogs    LocationLog[]
+  scheduledDepartureAt DateTime?
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   returnToDepot   Boolean       @default(true)

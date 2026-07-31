@@ -54,6 +54,7 @@ interface ActiveRoute {
   status: 'PLANNED' | 'IN_PROGRESS' | 'COMPLETED';
   plannedDistance: number;
   plannedTime: number;
+  scheduledDepartureAt?: string | null;
   vehicleModel: string;
   vehiclePlate: string;
   deliveries: Delivery[];
@@ -559,6 +560,21 @@ export default function DriverPage() {
                 {route.plannedDistance} km • {route.plannedTime} min estimados
               </p>
             </div>
+
+            {route.scheduledDepartureAt && (
+              <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-3.5 flex items-center gap-3 text-left w-full shadow-lg">
+                <div className="p-2.5 rounded-xl bg-amber-500/20 text-amber-400 font-bold text-base shrink-0">
+                  ⏰
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-amber-300">Horário de Saída Agendado</p>
+                  <p className="text-sm font-extrabold text-white">
+                    Saída prevista para às {new Date(route.scheduledDepartureAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                  </p>
+                </div>
+              </div>
+            )}
+
             <Button
               className="w-full py-3 text-sm font-extrabold uppercase tracking-wider"
               onClick={handleStartRoute}

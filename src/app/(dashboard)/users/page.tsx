@@ -171,24 +171,16 @@ export default function UsersPage() {
       );
       return;
     }
-    const handleOpenCreateModal = () => {
-      if (planInfo && !planInfo.canAddUser) {
-        showToast(
-          `Limite do plano ${planInfo.planName} atingido (${planInfo.maxUsers} usuário(s)). Faça upgrade para adicionar mais.`,
-          'error'
-        );
-        return;
-      }
-      setEditingUser(null);
-      setFormData({ name: '', email: '', password: '', role: 'DRIVER', avatarUrl: '' });
-      setIsModalOpen(true);
-    };
+    setEditingUser(null);
+    setFormData({ name: '', email: '', password: '', role: 'DRIVER', avatarUrl: '' });
+    setIsModalOpen(true);
+  };
 
-    const handleOpenEditModal = (user: User) => {
-      setEditingUser(user);
-      setFormData({ name: user.name, email: user.email, password: '', role: user.role, avatarUrl: user.avatarUrl || '' });
-      setIsModalOpen(true);
-    };
+  const handleOpenEditModal = (user: User) => {
+    setEditingUser(user);
+    setFormData({ name: user.name, email: user.email, password: '', role: user.role, avatarUrl: user.avatarUrl || '' });
+    setIsModalOpen(true);
+  };
 
     // ── Save (create or update) ───────────────────────────────────────────
     const handleSave = async () => {
@@ -611,4 +603,3 @@ export default function UsersPage() {
       </div>
     );
   }
-}

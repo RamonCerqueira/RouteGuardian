@@ -7735,6 +7735,7 @@ export namespace Prisma {
     driverId: string | null
     vehicleId: string | null
     tenantId: string | null
+    scheduledDepartureAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
     returnToDepot: boolean | null
@@ -7750,6 +7751,7 @@ export namespace Prisma {
     driverId: string | null
     vehicleId: string | null
     tenantId: string | null
+    scheduledDepartureAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
     returnToDepot: boolean | null
@@ -7765,6 +7767,7 @@ export namespace Prisma {
     driverId: number
     vehicleId: number
     tenantId: number
+    scheduledDepartureAt: number
     createdAt: number
     updatedAt: number
     returnToDepot: number
@@ -7792,6 +7795,7 @@ export namespace Prisma {
     driverId?: true
     vehicleId?: true
     tenantId?: true
+    scheduledDepartureAt?: true
     createdAt?: true
     updatedAt?: true
     returnToDepot?: true
@@ -7807,6 +7811,7 @@ export namespace Prisma {
     driverId?: true
     vehicleId?: true
     tenantId?: true
+    scheduledDepartureAt?: true
     createdAt?: true
     updatedAt?: true
     returnToDepot?: true
@@ -7822,6 +7827,7 @@ export namespace Prisma {
     driverId?: true
     vehicleId?: true
     tenantId?: true
+    scheduledDepartureAt?: true
     createdAt?: true
     updatedAt?: true
     returnToDepot?: true
@@ -7924,6 +7930,7 @@ export namespace Prisma {
     driverId: string
     vehicleId: string
     tenantId: string
+    scheduledDepartureAt: Date | null
     createdAt: Date
     updatedAt: Date
     returnToDepot: boolean
@@ -7958,6 +7965,7 @@ export namespace Prisma {
     driverId?: boolean
     vehicleId?: boolean
     tenantId?: boolean
+    scheduledDepartureAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     returnToDepot?: boolean
@@ -7979,6 +7987,7 @@ export namespace Prisma {
     driverId?: boolean
     vehicleId?: boolean
     tenantId?: boolean
+    scheduledDepartureAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     returnToDepot?: boolean
@@ -7997,6 +8006,7 @@ export namespace Prisma {
     driverId?: boolean
     vehicleId?: boolean
     tenantId?: boolean
+    scheduledDepartureAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     returnToDepot?: boolean
@@ -8015,12 +8025,13 @@ export namespace Prisma {
     driverId?: boolean
     vehicleId?: boolean
     tenantId?: boolean
+    scheduledDepartureAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     returnToDepot?: boolean
   }
 
-  export type RouteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "status" | "date" | "plannedDistance" | "plannedTime" | "driverId" | "vehicleId" | "tenantId" | "createdAt" | "updatedAt" | "returnToDepot", ExtArgs["result"]["route"]>
+  export type RouteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "status" | "date" | "plannedDistance" | "plannedTime" | "driverId" | "vehicleId" | "tenantId" | "scheduledDepartureAt" | "createdAt" | "updatedAt" | "returnToDepot", ExtArgs["result"]["route"]>
   export type RouteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     driver?: boolean | UserDefaultArgs<ExtArgs>
     vehicle?: boolean | VehicleDefaultArgs<ExtArgs>
@@ -8059,6 +8070,7 @@ export namespace Prisma {
       driverId: string
       vehicleId: string
       tenantId: string
+      scheduledDepartureAt: Date | null
       createdAt: Date
       updatedAt: Date
       returnToDepot: boolean
@@ -8499,6 +8511,7 @@ export namespace Prisma {
     readonly driverId: FieldRef<"Route", 'String'>
     readonly vehicleId: FieldRef<"Route", 'String'>
     readonly tenantId: FieldRef<"Route", 'String'>
+    readonly scheduledDepartureAt: FieldRef<"Route", 'DateTime'>
     readonly createdAt: FieldRef<"Route", 'DateTime'>
     readonly updatedAt: FieldRef<"Route", 'DateTime'>
     readonly returnToDepot: FieldRef<"Route", 'Boolean'>
@@ -11634,6 +11647,7 @@ export namespace Prisma {
     driverId: 'driverId',
     vehicleId: 'vehicleId',
     tenantId: 'tenantId',
+    scheduledDepartureAt: 'scheduledDepartureAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     returnToDepot: 'returnToDepot'
@@ -12236,6 +12250,7 @@ export namespace Prisma {
     driverId?: StringFilter<"Route"> | string
     vehicleId?: StringFilter<"Route"> | string
     tenantId?: StringFilter<"Route"> | string
+    scheduledDepartureAt?: DateTimeNullableFilter<"Route"> | Date | string | null
     createdAt?: DateTimeFilter<"Route"> | Date | string
     updatedAt?: DateTimeFilter<"Route"> | Date | string
     returnToDepot?: BoolFilter<"Route"> | boolean
@@ -12256,6 +12271,7 @@ export namespace Prisma {
     driverId?: SortOrder
     vehicleId?: SortOrder
     tenantId?: SortOrder
+    scheduledDepartureAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     returnToDepot?: SortOrder
@@ -12279,6 +12295,7 @@ export namespace Prisma {
     driverId?: StringFilter<"Route"> | string
     vehicleId?: StringFilter<"Route"> | string
     tenantId?: StringFilter<"Route"> | string
+    scheduledDepartureAt?: DateTimeNullableFilter<"Route"> | Date | string | null
     createdAt?: DateTimeFilter<"Route"> | Date | string
     updatedAt?: DateTimeFilter<"Route"> | Date | string
     returnToDepot?: BoolFilter<"Route"> | boolean
@@ -12299,6 +12316,7 @@ export namespace Prisma {
     driverId?: SortOrder
     vehicleId?: SortOrder
     tenantId?: SortOrder
+    scheduledDepartureAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     returnToDepot?: SortOrder
@@ -12322,6 +12340,7 @@ export namespace Prisma {
     driverId?: StringWithAggregatesFilter<"Route"> | string
     vehicleId?: StringWithAggregatesFilter<"Route"> | string
     tenantId?: StringWithAggregatesFilter<"Route"> | string
+    scheduledDepartureAt?: DateTimeNullableWithAggregatesFilter<"Route"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Route"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Route"> | Date | string
     returnToDepot?: BoolWithAggregatesFilter<"Route"> | boolean
@@ -13075,6 +13094,7 @@ export namespace Prisma {
     date?: Date | string
     plannedDistance: number
     plannedTime: number
+    scheduledDepartureAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     returnToDepot?: boolean
@@ -13095,6 +13115,7 @@ export namespace Prisma {
     driverId: string
     vehicleId: string
     tenantId: string
+    scheduledDepartureAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     returnToDepot?: boolean
@@ -13109,6 +13130,7 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     plannedDistance?: FloatFieldUpdateOperationsInput | number
     plannedTime?: FloatFieldUpdateOperationsInput | number
+    scheduledDepartureAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     returnToDepot?: BoolFieldUpdateOperationsInput | boolean
@@ -13129,6 +13151,7 @@ export namespace Prisma {
     driverId?: StringFieldUpdateOperationsInput | string
     vehicleId?: StringFieldUpdateOperationsInput | string
     tenantId?: StringFieldUpdateOperationsInput | string
+    scheduledDepartureAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     returnToDepot?: BoolFieldUpdateOperationsInput | boolean
@@ -13146,6 +13169,7 @@ export namespace Prisma {
     driverId: string
     vehicleId: string
     tenantId: string
+    scheduledDepartureAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     returnToDepot?: boolean
@@ -13158,6 +13182,7 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     plannedDistance?: FloatFieldUpdateOperationsInput | number
     plannedTime?: FloatFieldUpdateOperationsInput | number
+    scheduledDepartureAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     returnToDepot?: BoolFieldUpdateOperationsInput | boolean
@@ -13173,6 +13198,7 @@ export namespace Prisma {
     driverId?: StringFieldUpdateOperationsInput | string
     vehicleId?: StringFieldUpdateOperationsInput | string
     tenantId?: StringFieldUpdateOperationsInput | string
+    scheduledDepartureAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     returnToDepot?: BoolFieldUpdateOperationsInput | boolean
@@ -13968,6 +13994,7 @@ export namespace Prisma {
     driverId?: SortOrder
     vehicleId?: SortOrder
     tenantId?: SortOrder
+    scheduledDepartureAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     returnToDepot?: SortOrder
@@ -13988,6 +14015,7 @@ export namespace Prisma {
     driverId?: SortOrder
     vehicleId?: SortOrder
     tenantId?: SortOrder
+    scheduledDepartureAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     returnToDepot?: SortOrder
@@ -14003,6 +14031,7 @@ export namespace Prisma {
     driverId?: SortOrder
     vehicleId?: SortOrder
     tenantId?: SortOrder
+    scheduledDepartureAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     returnToDepot?: SortOrder
@@ -15293,6 +15322,7 @@ export namespace Prisma {
     date?: Date | string
     plannedDistance: number
     plannedTime: number
+    scheduledDepartureAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     returnToDepot?: boolean
@@ -15311,6 +15341,7 @@ export namespace Prisma {
     plannedTime: number
     driverId: string
     vehicleId: string
+    scheduledDepartureAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     returnToDepot?: boolean
@@ -15520,6 +15551,7 @@ export namespace Prisma {
     driverId?: StringFilter<"Route"> | string
     vehicleId?: StringFilter<"Route"> | string
     tenantId?: StringFilter<"Route"> | string
+    scheduledDepartureAt?: DateTimeNullableFilter<"Route"> | Date | string | null
     createdAt?: DateTimeFilter<"Route"> | Date | string
     updatedAt?: DateTimeFilter<"Route"> | Date | string
     returnToDepot?: BoolFilter<"Route"> | boolean
@@ -15626,6 +15658,7 @@ export namespace Prisma {
     date?: Date | string
     plannedDistance: number
     plannedTime: number
+    scheduledDepartureAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     returnToDepot?: boolean
@@ -15644,6 +15677,7 @@ export namespace Prisma {
     plannedTime: number
     vehicleId: string
     tenantId: string
+    scheduledDepartureAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     returnToDepot?: boolean
@@ -15923,6 +15957,7 @@ export namespace Prisma {
     date?: Date | string
     plannedDistance: number
     plannedTime: number
+    scheduledDepartureAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     returnToDepot?: boolean
@@ -15941,6 +15976,7 @@ export namespace Prisma {
     plannedTime: number
     driverId: string
     tenantId: string
+    scheduledDepartureAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     returnToDepot?: boolean
@@ -16601,6 +16637,7 @@ export namespace Prisma {
     date?: Date | string
     plannedDistance: number
     plannedTime: number
+    scheduledDepartureAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     returnToDepot?: boolean
@@ -16620,6 +16657,7 @@ export namespace Prisma {
     driverId: string
     vehicleId: string
     tenantId: string
+    scheduledDepartureAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     returnToDepot?: boolean
@@ -16731,6 +16769,7 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     plannedDistance?: FloatFieldUpdateOperationsInput | number
     plannedTime?: FloatFieldUpdateOperationsInput | number
+    scheduledDepartureAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     returnToDepot?: BoolFieldUpdateOperationsInput | boolean
@@ -16750,6 +16789,7 @@ export namespace Prisma {
     driverId?: StringFieldUpdateOperationsInput | string
     vehicleId?: StringFieldUpdateOperationsInput | string
     tenantId?: StringFieldUpdateOperationsInput | string
+    scheduledDepartureAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     returnToDepot?: BoolFieldUpdateOperationsInput | boolean
@@ -16857,6 +16897,7 @@ export namespace Prisma {
     date?: Date | string
     plannedDistance: number
     plannedTime: number
+    scheduledDepartureAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     returnToDepot?: boolean
@@ -16876,6 +16917,7 @@ export namespace Prisma {
     driverId: string
     vehicleId: string
     tenantId: string
+    scheduledDepartureAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     returnToDepot?: boolean
@@ -16905,6 +16947,7 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     plannedDistance?: FloatFieldUpdateOperationsInput | number
     plannedTime?: FloatFieldUpdateOperationsInput | number
+    scheduledDepartureAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     returnToDepot?: BoolFieldUpdateOperationsInput | boolean
@@ -16924,6 +16967,7 @@ export namespace Prisma {
     driverId?: StringFieldUpdateOperationsInput | string
     vehicleId?: StringFieldUpdateOperationsInput | string
     tenantId?: StringFieldUpdateOperationsInput | string
+    scheduledDepartureAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     returnToDepot?: BoolFieldUpdateOperationsInput | boolean
@@ -16978,6 +17022,7 @@ export namespace Prisma {
     plannedTime: number
     driverId: string
     vehicleId: string
+    scheduledDepartureAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     returnToDepot?: boolean
@@ -17142,6 +17187,7 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     plannedDistance?: FloatFieldUpdateOperationsInput | number
     plannedTime?: FloatFieldUpdateOperationsInput | number
+    scheduledDepartureAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     returnToDepot?: BoolFieldUpdateOperationsInput | boolean
@@ -17160,6 +17206,7 @@ export namespace Prisma {
     plannedTime?: FloatFieldUpdateOperationsInput | number
     driverId?: StringFieldUpdateOperationsInput | string
     vehicleId?: StringFieldUpdateOperationsInput | string
+    scheduledDepartureAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     returnToDepot?: BoolFieldUpdateOperationsInput | boolean
@@ -17176,6 +17223,7 @@ export namespace Prisma {
     plannedTime?: FloatFieldUpdateOperationsInput | number
     driverId?: StringFieldUpdateOperationsInput | string
     vehicleId?: StringFieldUpdateOperationsInput | string
+    scheduledDepartureAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     returnToDepot?: BoolFieldUpdateOperationsInput | boolean
@@ -17271,6 +17319,7 @@ export namespace Prisma {
     plannedTime: number
     vehicleId: string
     tenantId: string
+    scheduledDepartureAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     returnToDepot?: boolean
@@ -17290,6 +17339,7 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     plannedDistance?: FloatFieldUpdateOperationsInput | number
     plannedTime?: FloatFieldUpdateOperationsInput | number
+    scheduledDepartureAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     returnToDepot?: BoolFieldUpdateOperationsInput | boolean
@@ -17308,6 +17358,7 @@ export namespace Prisma {
     plannedTime?: FloatFieldUpdateOperationsInput | number
     vehicleId?: StringFieldUpdateOperationsInput | string
     tenantId?: StringFieldUpdateOperationsInput | string
+    scheduledDepartureAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     returnToDepot?: BoolFieldUpdateOperationsInput | boolean
@@ -17324,6 +17375,7 @@ export namespace Prisma {
     plannedTime?: FloatFieldUpdateOperationsInput | number
     vehicleId?: StringFieldUpdateOperationsInput | string
     tenantId?: StringFieldUpdateOperationsInput | string
+    scheduledDepartureAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     returnToDepot?: BoolFieldUpdateOperationsInput | boolean
@@ -17359,6 +17411,7 @@ export namespace Prisma {
     plannedTime: number
     driverId: string
     tenantId: string
+    scheduledDepartureAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     returnToDepot?: boolean
@@ -17371,6 +17424,7 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     plannedDistance?: FloatFieldUpdateOperationsInput | number
     plannedTime?: FloatFieldUpdateOperationsInput | number
+    scheduledDepartureAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     returnToDepot?: BoolFieldUpdateOperationsInput | boolean
@@ -17389,6 +17443,7 @@ export namespace Prisma {
     plannedTime?: FloatFieldUpdateOperationsInput | number
     driverId?: StringFieldUpdateOperationsInput | string
     tenantId?: StringFieldUpdateOperationsInput | string
+    scheduledDepartureAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     returnToDepot?: BoolFieldUpdateOperationsInput | boolean
@@ -17405,6 +17460,7 @@ export namespace Prisma {
     plannedTime?: FloatFieldUpdateOperationsInput | number
     driverId?: StringFieldUpdateOperationsInput | string
     tenantId?: StringFieldUpdateOperationsInput | string
+    scheduledDepartureAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     returnToDepot?: BoolFieldUpdateOperationsInput | boolean

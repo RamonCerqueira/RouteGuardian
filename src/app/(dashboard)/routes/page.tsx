@@ -42,6 +42,7 @@ interface Route {
   date: string;
   plannedDistance: number; // km
   plannedTime: number; // minutos
+  scheduledDepartureAt?: string | null;
   driverName: string;
   vehiclePlate: string;
   vehicleModel: string;
@@ -73,6 +74,7 @@ export default function RoutesPage() {
   const [selectedClients, setSelectedClients] = useState<string[]>([]); // clientIds in order
   const [plannedDistance, setPlannedDistance] = useState('10.0');
   const [plannedTime, setPlannedTime] = useState('60');
+  const [scheduledDepartureTime, setScheduledDepartureTime] = useState('14:30');
 
   // Resource options fetched from DB
   const [driverOptions, setDriverOptions] = useState<SelectOption[]>([]);
@@ -91,6 +93,7 @@ export default function RoutesPage() {
           date: new Date(r.date).toLocaleDateString('pt-BR'),
           plannedDistance: r.plannedDistance,
           plannedTime: r.plannedTime,
+          scheduledDepartureAt: r.scheduledDepartureAt,
           driverName: r.driver?.name || 'Não alocado',
           vehiclePlate: r.vehicle?.plate || '',
           vehicleModel: r.vehicle?.model || 'Sem veículo',
@@ -212,6 +215,14 @@ export default function RoutesPage() {
     }
 
     try {
+      let departureIso: string | null = null;
+      if (scheduledDepartureTime) {
+        const [hours, minutes] = scheduledDepartureTime.split(':');
+        const d = new Date();
+        d.setHours(parseInt(hours || '14', 10), parseInt(minutes || '00', 10), 0, 0);
+        departureIso = d.toISOString();
+      }
+
       const res = await fetch('/api/routes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -222,12 +233,13 @@ export default function RoutesPage() {
           deliveryClientIds: selectedClients,
           plannedDistance: parseFloat(plannedDistance),
           plannedTime: parseFloat(plannedTime),
+          scheduledDepartureAt: departureIso,
         }),
       });
       const data = await res.json();
 
       if (data.success) {
-        setToastMessage('Rota criada e alocada com sucesso no Supabase!');
+        setToastMessage('Rota criada e alocada com sucesso!');
         loadRoutes();
         setIsCreateOpen(false);
       } else {
@@ -355,7 +367,14 @@ export default function RoutesPage() {
           </div>
           <div>
             <p className="text-sm font-bold text-slate-200">{r.name}</p>
-            <p className="text-[10px] text-slate-500 font-mono">ID: {r.id.slice(0, 8)}... • {r.date}</p>
+            <p className="text-[10px] text-slate-500 font-mono">
+              ID: {r.id.slice(0, 8)}... • {r.date}
+              {r.scheduledDepartureAt && (
+                <span className="text-amber-400 font-bold ml-2">
+                  ⏰ Saída: {new Date(r.scheduledDepartureAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                </span>
+              )}
+            </p>
           </div>
         </div>
       ),
@@ -588,18 +607,25 @@ return (
           />
           <div className="grid grid-cols-2 gap-4">
             <Input
-              label="Distância Estimada (km)"
+              label="Distância (km)"
               value={plannedDistance}
               onChange={(e) => setPlannedDistance(e.target.value)}
               required
             />
             <Input
-              label="Tempo Estimado (minutos)"
+              label="Tempo (min)"
               value={plannedTime}
               onChange={(e) => setPlannedTime(e.target.value)}
               required
             />
           </div>
+          <Input
+            label="Horário de Saída Agendado (Notificação)"
+            type="time"
+            value={scheduledDepartureTime}
+            onChange={(e) => setScheduledDepartureTime(e.target.value)}
+            required
+          />
           <Select
             label="Selecionar Entregador"
             options={driverOptions}

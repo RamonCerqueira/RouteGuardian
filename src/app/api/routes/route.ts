@@ -24,6 +24,7 @@ export async function GET(req: NextRequest) {
           select: {
             id: true,
             name: true,
+            avatarUrl: true,
           },
         },
         vehicle: {
@@ -62,10 +63,19 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { name, driverId, vehicleId, deliveryClientIds, plannedDistance, plannedTime } = body;
+    const { name, driverId, vehicleId, deliveryClientIds, plannedDistance, plannedTime, scheduledDepartureAt } = body;
 
     if (!name || !driverId || !vehicleId || !deliveryClientIds || !Array.isArray(deliveryClientIds)) {
       return NextResponse.json({ success: false, message: 'Parâmetros obrigatórios ausentes.' }, { status: 400 });
+    }
+
+    // Parse scheduled departure date/time if provided
+    let departureDate: Date | null = null;
+    if (scheduledDepartureAt) {
+      const parsed = new Date(scheduledDepartureAt);
+      if (!isNaN(parsed.getTime())) {
+        departureDate = parsed;
+      }
     }
 
     // Verify driver exists
@@ -93,6 +103,7 @@ export async function POST(req: NextRequest) {
           vehicleId,
           plannedDistance: parseFloat(String(plannedDistance || 10.0)),
           plannedTime: parseFloat(String(plannedTime || 60.0)),
+          scheduledDepartureAt: departureDate,
           tenantId: auth.tenantId,
           status: 'PLANNED',
         },

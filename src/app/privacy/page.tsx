@@ -114,12 +114,25 @@ export default function PrivacyPage() {
             <p>
               Conforme o Art. 18 da LGPD, os titulares têm o direito de confirmar a existência de tratamento, acessar seus dados, solicitar correções de dados incompletos ou requerer a eliminação de dados desnecessários.
             </p>
+
+            <div className="mt-4 p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <p className="font-bold text-white text-xs">Canal Direto do Encarregado de Dados (DPO)</p>
+                <p className="text-[11px] text-slate-400">Deseja solicitar cópia de seus dados ou o desligamento da sua conta?</p>
+              </div>
+              <a
+                href="mailto:dpo@genioplay.com.br?subject=Solicitacao%20LGPD%20RouteGuardian"
+                className="px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 text-xs font-bold transition-all shrink-0"
+              >
+                Solicitar via DPO (dpo@genioplay.com.br)
+              </a>
+            </div>
           </section>
         </div>
 
         {/* Footer */}
         <div className="text-center text-xs text-slate-500 pt-4">
-          <p>© {new Date().getFullYear()} RouteGuardian AI. Todos os direitos reservados.</p>
+          <p>© {new Date().getFullYear()} RouteGuardian. Todos os direitos reservados. Em conformidade com a LGPD (Lei nº 13.709/2018).</p>
         </div>
       </div>
     </div>
