@@ -94,6 +94,48 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, message: 'Veículo não encontrado ou não pertence a esta empresa.' }, { status: 404 });
     }
 
+    // Auto-calculate exact driving distance and time via OSRM
+    let calcDistance = parseFloat(String(plannedDistance || 0));
+    let calcTime = parseFloat(String(plannedTime || 0));
+
+    const tenant = await prisma.tenant.findUnique({
+      where: { id: auth.tenantId },
+      select: { latitude: true, longitude: true },
+    });
+
+    if (deliveryClientIds.length > 0 && tenant?.latitude && tenant?.longitude) {
+      try {
+        const clients = await prisma.client.findMany({
+          where: { id: { in: deliveryClientIds } },
+          select: { id: true, latitude: true, longitude: true },
+        });
+
+        const orderedClients = deliveryClientIds
+          .map((id) => clients.find((c) => c.id === id))
+          .filter((c): c is { id: string; latitude: number; longitude: number } => !!c && typeof c.latitude === 'number' && typeof c.longitude === 'number');
+
+        if (orderedClients.length > 0) {
+          const originCoord = `${tenant.longitude},${tenant.latitude}`;
+          const destCoords = orderedClients.map((c) => `${c.longitude},${c.latitude}`).join(';');
+          const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${originCoord};${destCoords}?overview=false`;
+
+          const osrmRes = await fetch(osrmUrl);
+          if (osrmRes.ok) {
+            const osrmData = await osrmRes.json();
+            if (osrmData.code === 'Ok' && osrmData.routes?.[0]) {
+              calcDistance = parseFloat((osrmData.routes[0].distance / 1000).toFixed(1));
+              calcTime = Math.round(osrmData.routes[0].duration / 60);
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('Error auto calculating OSRM route distance in POST /api/routes:', e);
+      }
+    }
+
+    if (!calcDistance || calcDistance <= 0) calcDistance = 10.0;
+    if (!calcTime || calcTime <= 0) calcTime = 30;
+
     // Create route and all its deliveries in a transaction
     const newRoute = await prisma.$transaction(async (tx) => {
       const routeRecord = await tx.route.create({
@@ -101,8 +143,8 @@ export async function POST(req: NextRequest) {
           name,
           driverId,
           vehicleId,
-          plannedDistance: parseFloat(String(plannedDistance || 10.0)),
-          plannedTime: parseFloat(String(plannedTime || 60.0)),
+          plannedDistance: calcDistance,
+          plannedTime: calcTime,
           scheduledDepartureAt: departureDate,
           tenantId: auth.tenantId,
           status: 'PLANNED',

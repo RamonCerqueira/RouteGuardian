@@ -5,11 +5,11 @@ import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { StatCard, Card, Badge } from '@/components/ui/Badge';
-import { Table, Column } from '@/components/ui/Table';
 import { Button } from '@/components/ui/Button';
+import { ROUTE_COLORS } from '@/components/MapComponent';
 import { 
-  Users, TrendingUp, ShieldAlert, Award, AlertTriangle, 
-  CheckCircle, Fuel, Compass, Calendar, Plus, RefreshCw, BarChart3
+  Users, TrendingUp, CheckCircle, Fuel, Compass, 
+  Plus, RefreshCw, Truck, Building, MapPin, User, Check, AlertCircle, Clock
 } from 'lucide-react';
 
 // Load map dynamically to prevent SSR errors
@@ -25,9 +25,32 @@ const MapComponent = dynamic(() => import('@/components/MapComponent'), {
 interface DriverRanking {
   id: string;
   name: string;
+  avatarUrl?: string | null;
   deliveries: number;
+  totalAssigned: number;
   efficiency: number;
   status: 'ACTIVE' | 'INACTIVE';
+  color: string;
+}
+
+interface TimelineRoute {
+  id: string;
+  name: string;
+  driverName: string;
+  driverAvatarUrl?: string | null;
+  vehicleModel: string;
+  vehiclePlate: string;
+  color: string;
+  deliveries: Array<{
+    id: string;
+    sequence: number;
+    clientName: string;
+    status: 'PENDING' | 'DELIVERED' | 'FAILED';
+  }>;
+  currentStepIndex: number;
+  totalSteps: number;
+  progressPercent: number;
+  currentClientName: string;
 }
 
 export default function DashboardPage() {
@@ -36,6 +59,7 @@ export default function DashboardPage() {
   const [companyCoords, setCompanyCoords] = useState<[number, number]>([-12.9230, -38.4980]);
   const [companyName, setCompanyName] = useState<string>('Sede da Empresa');
   const [drivers, setDrivers] = useState<DriverRanking[]>([]);
+  const [timelineRoutes, setTimelineRoutes] = useState<TimelineRoute[]>([]);
   const [mapPoints, setMapPoints] = useState<Array<{
     id: string;
     name: string;
@@ -44,6 +68,11 @@ export default function DashboardPage() {
     longitude: number;
     status: 'PENDING' | 'DELIVERED' | 'FAILED';
     isCompany?: boolean;
+    driverName?: string;
+    driverAvatarUrl?: string | null;
+    routeName?: string;
+    routeId?: string;
+    scheduledDepartureAt?: string | Date | null;
   }>>([]);
   const [metrics, setMetrics] = useState({
     wastedFuelValue: 'R$ 0,00',
@@ -125,7 +154,43 @@ export default function DashboardPage() {
       });
       setMapPoints(activePoints);
 
-      // Driver rankings
+      // Map Timeline Routes (with distinct driver colors and animated vehicle progress)
+      const mappedTimelines: TimelineRoute[] = routesList.map((r: any, idx: number) => {
+        const sortedDeliveries = (r.deliveries || []).slice().sort((a: any, b: any) => a.sequence - b.sequence);
+        const deliveredCount = sortedDeliveries.filter((d: any) => d.status === 'DELIVERED').length;
+        const total = sortedDeliveries.length;
+
+        const currentStep = deliveredCount < total ? deliveredCount : Math.max(0, total - 1);
+        const activeDelivery = sortedDeliveries[currentStep];
+        
+        let progress = 0;
+        if (total > 0) {
+          progress = Math.min(98, Math.max(6, Math.round(((deliveredCount + 0.3) / (total + 0.4)) * 100)));
+        }
+
+        return {
+          id: r.id,
+          name: r.name,
+          driverName: r.driver?.name || 'Entregador não alocado',
+          driverAvatarUrl: r.driver?.avatarUrl,
+          vehicleModel: r.vehicle?.model || 'Veículo',
+          vehiclePlate: r.vehicle?.plate || '',
+          color: ROUTE_COLORS[idx % ROUTE_COLORS.length],
+          deliveries: sortedDeliveries.map((d: any) => ({
+            id: d.id,
+            sequence: d.sequence,
+            clientName: d.client?.name || `Parada #${d.sequence}`,
+            status: d.status,
+          })),
+          currentStepIndex: currentStep,
+          totalSteps: total,
+          progressPercent: progress,
+          currentClientName: activeDelivery?.client?.name || 'Sede da Empresa',
+        };
+      });
+      setTimelineRoutes(mappedTimelines);
+
+      // Driver rankings with individual theme colors and avatars
       const mappedDrivers: DriverRanking[] = driverUsers.map((u: any, index: number) => {
         const driverDeliveries = deliveriesList.filter((d: any) => d.driverName === u.name);
         const completed = driverDeliveries.filter((d: any) => d.status === 'DELIVERED').length;
@@ -134,9 +199,12 @@ export default function DashboardPage() {
         return {
           id: u.id || `DRV-${index + 1}`,
           name: u.name,
+          avatarUrl: u.avatarUrl,
           deliveries: completed,
+          totalAssigned: total,
           efficiency: driverScore,
           status: u.status || 'ACTIVE',
+          color: ROUTE_COLORS[index % ROUTE_COLORS.length],
         };
       });
       setDrivers(mappedDrivers);
@@ -177,45 +245,8 @@ export default function DashboardPage() {
     loadDashboardData();
   };
 
-  const columns: Column<DriverRanking>[] = [
-    { header: 'Motorista', accessorKey: 'name', className: 'font-bold text-slate-200' },
-    { header: 'Entregas Concluídas', accessorKey: 'deliveries', className: 'text-center text-slate-400' },
-    {
-      header: 'Score de Eficiência',
-      cell: (driver) => {
-        const score = driver.efficiency;
-        let variant: 'success' | 'warning' | 'danger' = 'success';
-        if (score < 70) variant = 'danger';
-        else if (score < 90) variant = 'warning';
-
-        return (
-          <div className="flex items-center gap-2">
-            <Badge variant={variant}>{score}%</Badge>
-            <div className="w-16 h-1.5 bg-slate-800 rounded-full overflow-hidden hidden sm:block">
-              <div 
-                className={`h-full rounded-full ${
-                  variant === 'success' ? 'bg-emerald-500' :
-                  variant === 'warning' ? 'bg-amber-500' : 'bg-rose-500'
-                }`}
-                style={{ width: `${score}%` }}
-              />
-            </div>
-          </div>
-        );
-      },
-    },
-    {
-      header: 'Status',
-      cell: (driver) => (
-        <Badge variant={driver.status === 'ACTIVE' ? 'success' : 'neutral'}>
-          {driver.status === 'ACTIVE' ? 'Ativo' : 'Inativo'}
-        </Badge>
-      ),
-    },
-  ];
-
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
+    <div className="space-y-8 max-w-7xl mx-auto pb-10">
       <PageHeader
         title="Painel Logístico e Operacional"
         description="Acompanhamento de auditoria por GPS, geofence, eficiência e custos de combustível."
@@ -267,7 +298,7 @@ export default function DashboardPage() {
         />
       </div>
 
-      {/* Grid Central: Mapa de Rastreamento + Gráficos SVG */}
+      {/* Grid Central: Mapa de Rastreamento + Status das Entregas */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Mapa Operacional em Tempo Real */}
@@ -276,8 +307,8 @@ export default function DashboardPage() {
             <div className="flex items-center gap-2">
               <Compass className="w-5 h-5 text-indigo-400 animate-spin-slow" />
               <div>
-                <h3 className="text-sm font-bold text-slate-100">Monitoramento GPS Ativo</h3>
-                <p className="text-[10px] text-slate-400 mt-0.5">Visão geográfica e status de paradas no mapa</p>
+                <h3 className="text-sm font-bold text-slate-100">Monitoramento GPS Ativo (Rotas Reais)</h3>
+                <p className="text-[10px] text-slate-400 mt-0.5">Visão geográfica e trajeto pelas ruas urbanas</p>
               </div>
             </div>
             <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
@@ -380,13 +411,155 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      {/* Grid Inferior: Gráfico de Linha + Ranking de Motoristas */}
+      {/* 🚚 NOVO CARD: LINHA DO TEMPO COM VEÍCULOS ANIMADOS POR ENTREGADOR */}
+      <Card 
+        title="Linha do Tempo de Entregas por Entregador" 
+        subtitle="Acompanhamento em tempo real das etapas de entrega com veículo animado por motorista"
+      >
+        {timelineRoutes.length === 0 ? (
+          <div className="py-8 text-center text-xs text-slate-500 border border-dashed border-slate-800 rounded-xl mt-2">
+            Nenhuma rota ativa cadastrada no momento. Crie uma rota para visualizar a linha do tempo animada.
+          </div>
+        ) : (
+          <div className="space-y-6 mt-4">
+            {timelineRoutes.map((route) => {
+              return (
+                <div 
+                  key={route.id} 
+                  className="bg-slate-950/60 border border-slate-800/90 rounded-xl p-4 space-y-4 hover:border-slate-700/80 transition-colors"
+                >
+                  {/* Driver Header */}
+                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800/80 pb-3">
+                    <div className="flex items-center gap-3">
+                      {/* Driver Avatar with individual theme color ring */}
+                      <div 
+                        className="w-10 h-10 rounded-full border-2 bg-slate-900 flex items-center justify-center overflow-hidden shrink-0 shadow-lg"
+                        style={{ borderColor: route.color }}
+                      >
+                        {route.driverAvatarUrl ? (
+                          <img src={route.driverAvatarUrl} alt={route.driverName} className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-xs font-black text-white">{route.driverName.charAt(0).toUpperCase()}</span>
+                        )}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-sm font-bold text-slate-100">{route.driverName}</h4>
+                          <span 
+                            className="w-2.5 h-2.5 rounded-full inline-block" 
+                            style={{ backgroundColor: route.color }}
+                            title={`Cor identificadora: ${route.driverName}`}
+                          />
+                        </div>
+                        <p className="text-[11px] text-slate-400 flex items-center gap-2 mt-0.5">
+                          <span>🚚 {route.vehicleModel} {route.vehiclePlate && `(${route.vehiclePlate})`}</span>
+                          <span>•</span>
+                          <span className="text-indigo-400 font-semibold">{route.name}</span>
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span 
+                        className="text-xs font-bold px-3 py-1 rounded-full border flex items-center gap-1.5 shadow-sm"
+                        style={{ 
+                          backgroundColor: `${route.color}15`, 
+                          borderColor: `${route.color}40`,
+                          color: route.color 
+                        }}
+                      >
+                        <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: route.color }} />
+                        A caminho: {route.currentClientName}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Animated Timeline Bar */}
+                  <div className="relative pt-6 pb-4 px-2">
+                    {/* Track Line Background */}
+                    <div className="h-2 w-full bg-slate-800/80 rounded-full relative overflow-visible">
+                      {/* Filled Track Line */}
+                      <div 
+                        className="h-full rounded-full transition-all duration-700 ease-out"
+                        style={{ 
+                          width: `${route.progressPercent}%`, 
+                          backgroundColor: route.color 
+                        }}
+                      />
+
+                      {/* Animated Moving Vehicle Marker */}
+                      <div 
+                        className="absolute top-1/2 -translate-y-1/2 transition-all duration-700 ease-out z-20 group cursor-pointer"
+                        style={{ left: `calc(${route.progressPercent}% - 18px)` }}
+                      >
+                        <div 
+                          className="w-9 h-9 rounded-full bg-slate-900 border-2 flex items-center justify-center text-white shadow-2xl animate-bounce hover:scale-125 transition-transform"
+                          style={{ borderColor: route.color }}
+                        >
+                          <Truck className="w-4 h-4 text-white" />
+                        </div>
+                        {/* Mini tooltip popup on hover */}
+                        <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-slate-900 border border-slate-700 text-[10px] font-bold text-white px-2 py-0.5 rounded shadow whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                          📍 {route.currentClientName}
+                        </div>
+                      </div>
+
+                      {/* Stop Nodes along timeline */}
+                      <div className="absolute inset-0 flex justify-between items-center -top-2">
+                        {/* CD Origin Node */}
+                        <div className="flex flex-col items-center relative group">
+                          <div className="w-6 h-6 rounded-full bg-amber-500 border-2 border-slate-900 flex items-center justify-center text-[10px] text-slate-950 font-extrabold z-10 shadow">
+                            🏢
+                          </div>
+                          <span className="text-[9px] font-bold text-amber-400 mt-1">Sede (CD)</span>
+                        </div>
+
+                        {/* Delivery Stop Nodes */}
+                        {route.deliveries.map((delivery, dIdx) => {
+                          const isDelivered = delivery.status === 'DELIVERED';
+                          const isCurrent = dIdx === route.currentStepIndex && !isDelivered;
+
+                          return (
+                            <div key={delivery.id} className="flex flex-col items-center relative group">
+                              <div 
+                                className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-[10px] font-bold z-10 transition-transform hover:scale-125 ${
+                                  isDelivered 
+                                    ? 'bg-emerald-500 border-slate-900 text-white' 
+                                    : isCurrent
+                                    ? 'bg-slate-900 border-indigo-400 text-white shadow-lg shadow-indigo-500/50'
+                                    : 'bg-slate-900 border-slate-700 text-slate-500'
+                                }`}
+                                style={isCurrent ? { borderColor: route.color } : {}}
+                              >
+                                {isDelivered ? (
+                                  <Check className="w-3 h-3 stroke-[3]" />
+                                ) : (
+                                  <span>{delivery.sequence}</span>
+                                )}
+                              </div>
+                              <span className="text-[9px] font-medium text-slate-400 mt-1 max-w-[80px] truncate text-center">
+                                {delivery.clientName}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </Card>
+
+      {/* Grid Inferior: Gráfico de Linha + Ranking Otimizado de Motoristas (SEM SCROLL) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Gráfico de Linha Premium SVG */}
         <div className="lg:col-span-2">
           <Card title="Desempenho Semanal e Economia" subtitle="Comparação diária de quilometragem útil vs desvios">
-            <div className="py-2 h-[220px] flex flex-col justify-between">
+            <div className="py-2 h-[260px] flex flex-col justify-between">
               <div className="flex-1 relative mt-4">
                 <svg className="w-full h-full" viewBox="0 0 500 150" preserveAspectRatio="none">
                   {/* Grid Lines */}
@@ -442,14 +615,72 @@ export default function DashboardPage() {
           </Card>
         </div>
 
-        {/* Tabela do Ranking de Motoristas */}
+        {/* Card Eficiência dos Entregadores (REDESENHADO SEM SCROLL HORIZONTAL) */}
         <div>
           <Card 
             title="Eficiência dos Entregadores" 
             subtitle="Ranking operacional do dia por motorista"
           >
-            <div className="overflow-x-auto mt-2">
-              <Table columns={columns} data={drivers} />
+            <div className="mt-3 space-y-3">
+              {drivers.length === 0 ? (
+                <p className="text-xs text-slate-500 py-4 text-center">Nenhum entregador encontrado.</p>
+              ) : (
+                drivers.map((driver) => {
+                  const score = driver.efficiency;
+                  const isSuccess = score >= 90;
+                  const isWarning = score >= 70 && score < 90;
+
+                  return (
+                    <div 
+                      key={driver.id} 
+                      className="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80 hover:border-slate-700/80 transition-colors space-y-2"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        {/* Driver info + Avatar */}
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div 
+                            className="w-8 h-8 rounded-full border-2 bg-slate-900 flex items-center justify-center overflow-hidden shrink-0"
+                            style={{ borderColor: driver.color }}
+                          >
+                            {driver.avatarUrl ? (
+                              <img src={driver.avatarUrl} alt={driver.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <span className="text-[10px] font-extrabold text-white">{driver.name.charAt(0).toUpperCase()}</span>
+                            )}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-xs font-bold text-slate-200 truncate">{driver.name}</p>
+                            <p className="text-[9px] text-slate-400 font-medium">
+                              {driver.deliveries} {driver.deliveries === 1 ? 'entrega concluída' : 'entregas concluídas'}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Score Badge */}
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full border ${
+                            isSuccess ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' :
+                            isWarning ? 'bg-amber-500/10 border-amber-500/30 text-amber-400' :
+                            'bg-rose-500/10 border-rose-500/30 text-rose-400'
+                          }`}>
+                            {score}%
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Score Mini Progress Bar */}
+                      <div className="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
+                        <div 
+                          className={`h-full rounded-full transition-all ${
+                            isSuccess ? 'bg-emerald-500' : isWarning ? 'bg-amber-500' : 'bg-rose-500'
+                          }`}
+                          style={{ width: `${score}%` }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })
+              )}
             </div>
           </Card>
         </div>

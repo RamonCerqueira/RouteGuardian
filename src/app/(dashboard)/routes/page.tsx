@@ -72,14 +72,61 @@ export default function RoutesPage() {
   const [selectedDriver, setSelectedDriver] = useState('');
   const [selectedVehicle, setSelectedVehicle] = useState('');
   const [selectedClients, setSelectedClients] = useState<string[]>([]); // clientIds in order
-  const [plannedDistance, setPlannedDistance] = useState('10.0');
-  const [plannedTime, setPlannedTime] = useState('60');
+  const [plannedDistance, setPlannedDistance] = useState('0.0');
+  const [plannedTime, setPlannedTime] = useState('0');
   const [scheduledDepartureTime, setScheduledDepartureTime] = useState('14:30');
+  const [isCalculatingRouteStats, setIsCalculatingRouteStats] = useState(false);
 
   // Resource options fetched from DB
   const [driverOptions, setDriverOptions] = useState<SelectOption[]>([]);
   const [vehicleOptions, setVehicleOptions] = useState<SelectOption[]>([]);
   const [clientsList, setClientsList] = useState<DbClient[]>([]);
+
+  // Automatically calculate route distance and duration using OSRM when selected clients change
+  useEffect(() => {
+    if (!isCreateOpen || selectedClients.length === 0 || !tenantInfo?.latitude || !tenantInfo?.longitude) {
+      if (selectedClients.length === 0) {
+        setPlannedDistance('0.0');
+        setPlannedTime('0');
+      }
+      return;
+    }
+
+    const orderedClients = selectedClients
+      .map(id => clientsList.find(c => c.id === id))
+      .filter((c): c is DbClient => !!c && typeof c.latitude === 'number' && typeof c.longitude === 'number');
+
+    if (orderedClients.length === 0) return;
+
+    let isMounted = true;
+    setIsCalculatingRouteStats(true);
+
+    const originCoord = `${tenantInfo.longitude},${tenantInfo.latitude}`;
+    const destCoords = orderedClients.map(c => `${c.longitude},${c.latitude}`).join(';');
+    const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${originCoord};${destCoords}?overview=false`;
+
+    fetch(osrmUrl)
+      .then(res => res.json())
+      .then(data => {
+        if (!isMounted) return;
+        if (data.code === 'Ok' && data.routes?.[0]) {
+          const distKm = (data.routes[0].distance / 1000).toFixed(1);
+          const timeMin = Math.round(data.routes[0].duration / 60);
+          setPlannedDistance(distKm);
+          setPlannedTime(String(timeMin));
+        }
+      })
+      .catch(err => {
+        console.warn('Could not auto-calculate stats via OSRM', err);
+      })
+      .finally(() => {
+        if (isMounted) setIsCalculatingRouteStats(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [selectedClients, tenantInfo, clientsList, isCreateOpen]);
 
   const loadRoutes = async () => {
     try {
@@ -619,6 +666,16 @@ return (
               required
             />
           </div>
+          {isCalculatingRouteStats ? (
+            <div className="text-[10px] text-indigo-400 font-bold bg-indigo-500/10 px-2.5 py-1 rounded-lg border border-indigo-500/20 flex items-center gap-1.5 animate-pulse">
+              <RefreshCw className="w-3 h-3 animate-spin shrink-0" />
+              Calculando distância e tempo real pelas vias...
+            </div>
+          ) : selectedClients.length > 0 ? (
+            <div className="text-[10px] text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20 flex items-center gap-1.5">
+              <span>⚡</span> Calculado automaticamente pelas vias urbanas (OSRM)
+            </div>
+          ) : null}
           <Input
             label="Horário de Saída Agendado (Notificação)"
             type="time"
