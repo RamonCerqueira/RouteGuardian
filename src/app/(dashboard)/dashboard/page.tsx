@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { StatCard, Card, Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { ROUTE_COLORS } from '@/components/MapComponent';
+import { ROUTE_COLORS, getDriverColor } from '@/lib/constants';
 import { 
   Users, TrendingUp, CheckCircle, Fuel, Compass, 
   Plus, RefreshCw, Truck, Building, MapPin, User, Check, AlertCircle, Clock
@@ -175,7 +175,7 @@ export default function DashboardPage() {
           driverAvatarUrl: r.driver?.avatarUrl,
           vehicleModel: r.vehicle?.model || 'Veículo',
           vehiclePlate: r.vehicle?.plate || '',
-          color: ROUTE_COLORS[idx % ROUTE_COLORS.length],
+          color: getDriverColor(r.driver?.id || r.driver?.name || r.id || idx),
           deliveries: sortedDeliveries.map((d: any) => ({
             id: d.id,
             sequence: d.sequence,
@@ -204,7 +204,7 @@ export default function DashboardPage() {
           totalAssigned: total,
           efficiency: driverScore,
           status: u.status || 'ACTIVE',
-          color: ROUTE_COLORS[index % ROUTE_COLORS.length],
+          color: getDriverColor(u.id || u.name || index),
         };
       });
       setDrivers(mappedDrivers);

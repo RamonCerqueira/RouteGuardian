@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { ROUTE_COLORS, getDriverColor } from '@/lib/constants';
 
 export interface DeliveryPoint {
   id: string;
@@ -27,16 +28,7 @@ interface MapComponentProps {
   showPolyline?: boolean;
 }
 
-export const ROUTE_COLORS = [
-  '#6366f1', // Indigo
-  '#10b981', // Emerald
-  '#f59e0b', // Amber
-  '#ec4899', // Pink
-  '#8b5cf6', // Purple
-  '#06b6d4', // Cyan
-  '#3b82f6', // Blue
-  '#f97316', // Orange
-];
+export { ROUTE_COLORS };
 
 export default function MapComponent({ center, zoom = 13, points, showPolyline = true }: MapComponentProps) {
   const [streetPaths, setStreetPaths] = useState<Record<string, [number, number][]>>({});
@@ -111,7 +103,7 @@ export default function MapComponent({ center, zoom = 13, points, showPolyline =
       });
     }
 
-    const driverColor = ROUTE_COLORS[routeIndex % ROUTE_COLORS.length];
+    const driverColor = getDriverColor(point.driverName || point.routeId || routeIndex);
     const statusColor = 
       point.status === 'DELIVERED' ? '#10b981' :
       point.status === 'FAILED' ? '#f43f5e' : driverColor;
@@ -219,7 +211,8 @@ export default function MapComponent({ center, zoom = 13, points, showPolyline =
             ? streetPaths[routeId]
             : fallbackCoords;
 
-          const color = ROUTE_COLORS[idx % ROUTE_COLORS.length];
+          const driverName = routePoints.find(p => p.driverName)?.driverName;
+          const color = getDriverColor(driverName || routeId || idx);
 
           return (
             <React.Fragment key={routeId}>
