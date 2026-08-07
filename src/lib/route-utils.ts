@@ -31,6 +31,19 @@ export function getRouteTimingStatus(route: {
     };
   }
 
+  // If route canceled
+  if (route.status === 'CANCELED') {
+    return {
+      isDelayed: false,
+      type: 'COMPLETED',
+      label: 'Cancelada',
+      badgeBg: 'bg-rose-500/10',
+      badgeBorder: 'border-rose-500/20',
+      badgeText: 'text-rose-400',
+      badgeDotColor: '#ef4444',
+    };
+  }
+
   const now = new Date();
 
   // 1. Check Scheduled Departure delay (PLANNED status with scheduled time in past)

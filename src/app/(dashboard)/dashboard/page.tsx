@@ -186,7 +186,10 @@ export default function DashboardPage() {
       const dataDeliveries = await resDeliveries.json();
       const deliveriesList = dataDeliveries.success && Array.isArray(dataDeliveries.deliveries) ? dataDeliveries.deliveries : [];
 
-      // Map Points from active routes - ALWAYS start with company depot at Sequence 0
+      // Filter out CANCELED routes from active monitoring (map and timeline)
+      const activeRoutesList = routesList.filter((r: any) => r.status !== 'CANCELED');
+
+      // Map Points from active non-canceled routes - ALWAYS start with company depot at Sequence 0
       const activePoints: any[] = [
         {
           id: 'COMPANY_DEPOT',
@@ -199,7 +202,7 @@ export default function DashboardPage() {
         },
       ];
 
-      routesList.forEach((r: any) => {
+      activeRoutesList.forEach((r: any) => {
         if (r.deliveries && Array.isArray(r.deliveries)) {
           r.deliveries.forEach((d: any) => {
             if (d.client && d.client.latitude && d.client.longitude) {
@@ -222,8 +225,8 @@ export default function DashboardPage() {
       });
       setMapPoints(activePoints);
 
-      // Map Timeline Routes (with distinct driver colors and animated vehicle progress & timing status)
-      const mappedTimelines: TimelineRoute[] = routesList.map((r: any, idx: number) => {
+      // Map Timeline Routes for active non-canceled routes
+      const mappedTimelines: TimelineRoute[] = activeRoutesList.map((r: any, idx: number) => {
         const sortedDeliveries = (r.deliveries || []).slice().sort((a: any, b: any) => a.sequence - b.sequence);
         const deliveredCount = sortedDeliveries.filter((d: any) => d.status === 'DELIVERED').length;
         const total = sortedDeliveries.length;
