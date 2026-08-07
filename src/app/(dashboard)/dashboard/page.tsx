@@ -7,9 +7,12 @@ import { PageHeader } from '@/components/layout/PageHeader';
 import { StatCard, Card, Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { ROUTE_COLORS, getDriverColor } from '@/lib/constants';
+import { getRouteTimingStatus, RouteTimingInfo } from '@/lib/route-utils';
+import { Modal } from '@/components/ui/Modal';
+import { Input } from '@/components/ui/Input';
 import { 
   Users, TrendingUp, CheckCircle, Fuel, Compass, 
-  Plus, RefreshCw, Truck, Building, MapPin, User, Check, AlertCircle, Clock
+  Plus, RefreshCw, Truck, Building, MapPin, User, Check, AlertCircle, Clock, Calendar
 } from 'lucide-react';
 
 // Load map dynamically to prevent SSR errors
@@ -41,6 +44,9 @@ interface TimelineRoute {
   vehicleModel: string;
   vehiclePlate: string;
   color: string;
+  scheduledDepartureAt?: string | null;
+  status: string;
+  timingInfo: RouteTimingInfo;
   deliveries: Array<{
     id: string;
     sequence: number;
@@ -85,6 +91,68 @@ export default function DashboardPage() {
     failedPercent: 0,
     avgScore: '100,0%',
   });
+
+  // Reschedule Modal State
+  const [rescheduleModalOpen, setRescheduleModalOpen] = useState(false);
+  const [rescheduleRoute, setRescheduleRoute] = useState<TimelineRoute | null>(null);
+  const [rescheduleDateTime, setRescheduleDateTime] = useState('');
+  const [rescheduleLoading, setRescheduleLoading] = useState(false);
+
+  const handleOpenReschedule = (route: TimelineRoute) => {
+    setRescheduleRoute(route);
+    const nowPlusHour = new Date(Date.now() + 3600 * 1000);
+    // Format YYYY-MM-THH:mm for datetime-local input
+    const formatted = nowPlusHour.toISOString().slice(0, 16);
+    setRescheduleDateTime(formatted);
+    setRescheduleModalOpen(true);
+  };
+
+  const handleSaveReschedule = async () => {
+    if (!rescheduleRoute || !rescheduleDateTime) return;
+    setRescheduleLoading(true);
+    try {
+      const res = await fetch('/api/routes', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          routeId: rescheduleRoute.id,
+          scheduledDepartureAt: new Date(rescheduleDateTime).toISOString(),
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setRescheduleModalOpen(false);
+        loadDashboardData();
+      } else {
+        alert(data.message || 'Erro ao reagendar rota');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Erro ao comunicar com o servidor');
+    } finally {
+      setRescheduleLoading(false);
+    }
+  };
+
+  const handleCancelExpiredRoute = async (routeId: string) => {
+    if (!confirm('Deseja cancelar esta rota agendada vencida?')) return;
+    try {
+      const res = await fetch('/api/routes', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          routeId,
+          status: 'CANCELED',
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        loadDashboardData();
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const loadDashboardData = async () => {
     setLoading(true);
@@ -154,7 +222,7 @@ export default function DashboardPage() {
       });
       setMapPoints(activePoints);
 
-      // Map Timeline Routes (with distinct driver colors and animated vehicle progress)
+      // Map Timeline Routes (with distinct driver colors and animated vehicle progress & timing status)
       const mappedTimelines: TimelineRoute[] = routesList.map((r: any, idx: number) => {
         const sortedDeliveries = (r.deliveries || []).slice().sort((a: any, b: any) => a.sequence - b.sequence);
         const deliveredCount = sortedDeliveries.filter((d: any) => d.status === 'DELIVERED').length;
@@ -168,6 +236,8 @@ export default function DashboardPage() {
           progress = Math.min(98, Math.max(6, Math.round(((deliveredCount + 0.3) / (total + 0.4)) * 100)));
         }
 
+        const timingInfo = getRouteTimingStatus(r);
+
         return {
           id: r.id,
           name: r.name,
@@ -176,6 +246,9 @@ export default function DashboardPage() {
           vehicleModel: r.vehicle?.model || 'Veículo',
           vehiclePlate: r.vehicle?.plate || '',
           color: getDriverColor(r.driver?.id || r.driver?.name || r.id || idx),
+          scheduledDepartureAt: r.scheduledDepartureAt,
+          status: r.status,
+          timingInfo,
           deliveries: sortedDeliveries.map((d: any) => ({
             id: d.id,
             sequence: d.sequence,
@@ -411,10 +484,39 @@ export default function DashboardPage() {
         </Card>
       </div>
 
+      {/* Alert Banner for Delayed / Overdue Routes */}
+      {timelineRoutes.filter(r => r.timingInfo.isDelayed).length > 0 && (
+        <div className="bg-rose-500/10 border border-rose-500/30 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4 shadow-lg shadow-rose-950/20 animate-pulse-slow">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center shrink-0 border border-rose-500/30">
+              <AlertCircle className="w-5 h-5 animate-pulse" />
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-rose-200">
+                {timelineRoutes.filter(r => r.timingInfo.isDelayed).length === 1 
+                  ? '1 Rota com Atraso Crítico Detectada' 
+                  : `${timelineRoutes.filter(r => r.timingInfo.isDelayed).length} Rotas com Atraso Crítico Detectadas`}
+              </h4>
+              <p className="text-xs text-rose-300/80 mt-0.5">
+                Identificamos agendamentos vencidos ou atrasos de SLA. Reagende o horário ou atualize a rota do motorista.
+              </p>
+            </div>
+          </div>
+          <Button 
+            variant="secondary" 
+            size="sm"
+            onClick={() => router.push('/routes')}
+            leftIcon={<Clock className="w-3.5 h-3.5" />}
+          >
+            Gerenciar Rotas
+          </Button>
+        </div>
+      )}
+
       {/* 🚚 NOVO CARD: LINHA DO TEMPO COM VEÍCULOS ANIMADOS POR ENTREGADOR */}
       <Card 
         title="Linha do Tempo de Entregas por Entregador" 
-        subtitle="Acompanhamento em tempo real das etapas de entrega com veículo animado por motorista"
+        subtitle="Acompanhamento em tempo real das etapas de entrega com veículo animado e validação temporal de SLA"
       >
         {timelineRoutes.length === 0 ? (
           <div className="py-8 text-center text-xs text-slate-500 border border-dashed border-slate-800 rounded-xl mt-2">
@@ -423,10 +525,13 @@ export default function DashboardPage() {
         ) : (
           <div className="space-y-6 mt-4">
             {timelineRoutes.map((route) => {
+              const timing = route.timingInfo;
               return (
                 <div 
                   key={route.id} 
-                  className="bg-slate-950/60 border border-slate-800/90 rounded-xl p-4 space-y-4 hover:border-slate-700/80 transition-colors"
+                  className={`bg-slate-950/60 border rounded-xl p-4 space-y-4 transition-colors ${
+                    timing.isDelayed ? 'border-rose-500/40 hover:border-rose-500/60 bg-rose-950/10' : 'border-slate-800/90 hover:border-slate-700/80'
+                  }`}
                 >
                   {/* Driver Header */}
                   <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800/80 pb-3">
@@ -459,18 +564,51 @@ export default function DashboardPage() {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <span 
-                        className="text-xs font-bold px-3 py-1 rounded-full border flex items-center gap-1.5 shadow-sm"
-                        style={{ 
-                          backgroundColor: `${route.color}15`, 
-                          borderColor: `${route.color}40`,
-                          color: route.color 
-                        }}
-                      >
-                        <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: route.color }} />
-                        A caminho: {route.currentClientName}
-                      </span>
+                    {/* Status Badge & Actions */}
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {/* Dynamic Timing / Status Badge */}
+                      <div className="flex flex-col items-end">
+                        <span 
+                          className={`text-xs font-bold px-3 py-1 rounded-full border flex items-center gap-1.5 shadow-sm ${timing.badgeBg} ${timing.badgeBorder} ${timing.badgeText}`}
+                        >
+                          <span 
+                            className={`w-2 h-2 rounded-full ${timing.isDelayed ? 'animate-ping' : 'animate-pulse'}`} 
+                            style={{ backgroundColor: timing.badgeDotColor }} 
+                          />
+                          {timing.label}
+                        </span>
+                        {timing.subLabel && (
+                          <span className="text-[10px] text-rose-300/80 font-medium mt-0.5">
+                            {timing.subLabel}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Quick Action Buttons for Delayed / Scheduled Routes */}
+                      {timing.isDelayed && (
+                        <div className="flex items-center gap-1.5 ml-2">
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            className="h-7 text-[11px] px-2.5"
+                            leftIcon={<Calendar className="w-3.5 h-3.5 text-indigo-400" />}
+                            onClick={() => handleOpenReschedule(route)}
+                          >
+                            Reagendar
+                          </Button>
+
+                          {timing.type === 'SCHEDULE_EXPIRED' && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-7 text-[11px] px-2.5 text-rose-400 border-rose-500/30 hover:bg-rose-500/10"
+                              onClick={() => handleCancelExpiredRoute(route.id)}
+                            >
+                              Cancelar
+                            </Button>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -685,6 +823,42 @@ export default function DashboardPage() {
           </Card>
         </div>
       </div>
+
+      {/* Modal de Reagendamento Rápido de Rota */}
+      <Modal
+        isOpen={rescheduleModalOpen}
+        onClose={() => setRescheduleModalOpen(false)}
+        title={`Reagendar Rota: ${rescheduleRoute?.name || ''}`}
+      >
+        <div className="space-y-4 py-2">
+          <p className="text-xs text-slate-400">
+            Selecione a nova data e horário de partida prevista para a rota do entregador <strong>{rescheduleRoute?.driverName}</strong>.
+          </p>
+          
+          <Input
+            label="Nova Data e Horário Agendado"
+            type="datetime-local"
+            value={rescheduleDateTime}
+            onChange={(e) => setRescheduleDateTime(e.target.value)}
+          />
+
+          <div className="flex justify-end gap-3 pt-4 border-t border-slate-800 mt-4">
+            <Button 
+              variant="outline" 
+              onClick={() => setRescheduleModalOpen(false)}
+            >
+              Cancelar
+            </Button>
+            <Button 
+              isLoading={rescheduleLoading} 
+              onClick={handleSaveReschedule}
+              leftIcon={<Calendar className="w-4 h-4" />}
+            >
+              Salvar Reagendamento
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

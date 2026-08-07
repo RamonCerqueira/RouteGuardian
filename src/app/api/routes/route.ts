@@ -187,10 +187,11 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ success: false, message: 'Não autorizado.' }, { status: 401 });
     }
 
-    const { routeId, status } = await req.json();
+    const body = await req.json();
+    const { routeId, status, scheduledDepartureAt, driverId, vehicleId } = body;
 
-    if (!routeId || !status) {
-      return NextResponse.json({ success: false, message: 'ID da rota e status são obrigatórios.' }, { status: 400 });
+    if (!routeId) {
+      return NextResponse.json({ success: false, message: 'ID da rota é obrigatório.' }, { status: 400 });
     }
 
     // Verify route belongs to tenant
@@ -202,19 +203,35 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ success: false, message: 'Rota não encontrada.' }, { status: 404 });
     }
 
+    const updateData: any = {};
+    if (status) updateData.status = status;
+    if (driverId) updateData.driverId = driverId;
+    if (vehicleId) updateData.vehicleId = vehicleId;
+
+    if (scheduledDepartureAt !== undefined) {
+      if (scheduledDepartureAt === null || scheduledDepartureAt === '') {
+        updateData.scheduledDepartureAt = null;
+      } else {
+        const parsed = new Date(scheduledDepartureAt);
+        if (!isNaN(parsed.getTime())) {
+          updateData.scheduledDepartureAt = parsed;
+        }
+      }
+    }
+
     const updatedRoute = await prisma.route.update({
       where: { id: routeId },
-      data: { status },
+      data: updateData,
     });
 
     return NextResponse.json({
       success: true,
-      message: `Status da rota atualizado para ${status}.`,
+      message: 'Rota atualizada com sucesso.',
       route: updatedRoute,
     });
   } catch (error) {
-    console.error('Error updating route status:', error);
-    return NextResponse.json({ success: false, message: 'Erro ao atualizar status da rota.' }, { status: 500 });
+    console.error('Error updating route:', error);
+    return NextResponse.json({ success: false, message: 'Erro ao atualizar rota.' }, { status: 500 });
   }
 }
 

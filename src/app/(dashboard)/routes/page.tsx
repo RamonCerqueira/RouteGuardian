@@ -10,9 +10,10 @@ import { Modal } from '@/components/ui/Modal';
 import { Toast } from '@/components/ui/Alert';
 import { Input } from '@/components/ui/Input';
 import { Select, SelectOption } from '@/components/ui/TextArea';
+import { getRouteTimingStatus } from '@/lib/route-utils';
 import {
   Navigation, Compass, Calendar, Truck, User, Sparkles, MapPin,
-  RefreshCw, Plus, ArrowUp, ArrowDown, CheckSquare, Square, Building
+  RefreshCw, Plus, ArrowUp, ArrowDown, CheckSquare, Square, Building, AlertCircle
 } from 'lucide-react';
 
 // Load map dynamically to prevent SSR errors
@@ -404,6 +405,47 @@ export default function RoutesPage() {
     }
   };
 
+  // Reschedule state
+  const [rescheduleModalOpen, setRescheduleModalOpen] = useState(false);
+  const [rescheduleRouteItem, setRescheduleRouteItem] = useState<Route | null>(null);
+  const [rescheduleDateTime, setRescheduleDateTime] = useState('');
+  const [rescheduleLoading, setRescheduleLoading] = useState(false);
+
+  const handleOpenRescheduleModal = (r: Route) => {
+    setRescheduleRouteItem(r);
+    const nowPlusHour = new Date(Date.now() + 3600 * 1000);
+    setRescheduleDateTime(nowPlusHour.toISOString().slice(0, 16));
+    setRescheduleModalOpen(true);
+  };
+
+  const handleSaveReschedule = async () => {
+    if (!rescheduleRouteItem || !rescheduleDateTime) return;
+    setRescheduleLoading(true);
+    try {
+      const res = await fetch('/api/routes', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          routeId: rescheduleRouteItem.id,
+          scheduledDepartureAt: new Date(rescheduleDateTime).toISOString(),
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setToastMessage('Rota reagendada com sucesso!');
+        loadRoutes();
+        setRescheduleModalOpen(false);
+      } else {
+        alert(data.message || 'Erro ao reagendar rota');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Erro de conexão ao reagendar rota.');
+    } finally {
+      setRescheduleLoading(false);
+    }
+  };
+
   const columns: Column<Route>[] = [
     {
       header: 'Nome da Rota',
@@ -414,10 +456,10 @@ export default function RoutesPage() {
           </div>
           <div>
             <p className="text-sm font-bold text-slate-200">{r.name}</p>
-            <p className="text-[10px] text-slate-500 font-mono">
-              ID: {r.id.slice(0, 8)}... • {r.date}
+            <p className="text-[10px] text-slate-500 font-mono flex items-center gap-2 mt-0.5">
+              <span>ID: {r.id.slice(0, 8)}... • {r.date}</span>
               {r.scheduledDepartureAt && (
-                <span className="text-amber-400 font-bold ml-2">
+                <span className="text-indigo-400 font-bold bg-indigo-500/10 px-1.5 py-0.5 rounded border border-indigo-500/20">
                   ⏰ Saída: {new Date(r.scheduledDepartureAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                 </span>
               )}
@@ -451,8 +493,9 @@ export default function RoutesPage() {
       ),
     },
     {
-      header: 'Status',
+      header: 'Status & Validação Temporal',
       cell: (r) => {
+        const timing = getRouteTimingStatus(r);
         const statuses = {
           PLANNED: { variant: 'indigo' as const, label: 'Planejada' },
           IN_PROGRESS: { variant: 'warning' as const, label: 'Em Andamento' },
@@ -460,6 +503,21 @@ export default function RoutesPage() {
           CANCELED: { variant: 'danger' as const, label: 'Cancelada' },
         };
         const s = statuses[r.status] || { variant: 'neutral' as const, label: r.status };
+
+        if (timing.isDelayed) {
+          return (
+            <div className="flex flex-col gap-1">
+              <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full border inline-flex items-center gap-1.5 w-fit ${timing.badgeBg} ${timing.badgeBorder} ${timing.badgeText}`}>
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping" />
+                {timing.label}
+              </span>
+              {timing.subLabel && (
+                <span className="text-[10px] text-slate-400 font-medium">{timing.subLabel}</span>
+              )}
+            </div>
+          );
+        }
+
         return <Badge variant={s.variant}>{s.label}</Badge>;
       },
     },
@@ -471,6 +529,17 @@ export default function RoutesPage() {
           <Button size="sm" variant="outline" onClick={() => handleOpenDetails(r)}>
             Ver Rota
           </Button>
+
+          {r.status !== 'COMPLETED' && r.status !== 'CANCELED' && (
+            <Button
+              size="sm"
+              variant="outline"
+              className="text-indigo-400 border-indigo-500/20 hover:bg-indigo-500/10 text-xs"
+              onClick={() => handleOpenRescheduleModal(r)}
+            >
+              Reagendar
+            </Button>
+          )}
 
           {r.status !== 'CANCELED' && r.status !== 'COMPLETED' && (
             <Button
@@ -823,6 +892,39 @@ return (
               </div>
             )}
           </div>
+        </div>
+      </div>
+    </Modal>
+
+    {/* Modal de Reagendamento de Rota */}
+    <Modal
+      isOpen={rescheduleModalOpen}
+      onClose={() => setRescheduleModalOpen(false)}
+      title={`Reagendar Rota: ${rescheduleRouteItem?.name || ''}`}
+    >
+      <div className="space-y-4 py-2">
+        <p className="text-xs text-slate-400">
+          Selecione a nova data e horário de partida prevista para a rota do entregador <strong>{rescheduleRouteItem?.driverName}</strong>.
+        </p>
+
+        <Input
+          label="Nova Data e Horário Agendado"
+          type="datetime-local"
+          value={rescheduleDateTime}
+          onChange={(e) => setRescheduleDateTime(e.target.value)}
+        />
+
+        <div className="flex justify-end gap-3 pt-4 border-t border-slate-800 mt-4">
+          <Button variant="outline" onClick={() => setRescheduleModalOpen(false)}>
+            Cancelar
+          </Button>
+          <Button
+            isLoading={rescheduleLoading}
+            onClick={handleSaveReschedule}
+            leftIcon={<Calendar className="w-4 h-4" />}
+          >
+            Salvar Reagendamento
+          </Button>
         </div>
       </div>
     </Modal>
